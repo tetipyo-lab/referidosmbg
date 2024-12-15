@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Los atributos que son asignables masivamente.
      *
      * @var array<int, string>
      */
@@ -21,10 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'referral_code',
+        'referred_by',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Los atributos que deberían estar ocultos en la serialización.
      *
      * @var array<int, string>
      */
@@ -34,7 +36,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Los atributos que deberían ser convertidos.
      *
      * @var array<string, string>
      */
@@ -42,4 +44,41 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Relación con los roles (muchos a muchos).
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    /**
+     * Relación con el usuario que hizo la referencia (relación de auto-referencia).
+     */
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    /**
+     * Relación con los usuarios referidos por este usuario (relación recursiva de un usuario a muchos).
+     */
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+    protected static function generateReferralCode(): string
+    {
+        // Generar un código único de 10 caracteres alfanuméricos
+        $code = strtoupper(substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 10));
+        
+        // Verificar que no exista en la base de datos
+        while (User::where('referral_code', $code)->exists()) {
+            $code = strtoupper(substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 10));
+        }
+
+        return $code;
+    }
 }
