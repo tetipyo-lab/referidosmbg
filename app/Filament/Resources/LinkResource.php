@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Tables\Columns\TextColumn;
 
 class LinkResource extends Resource
 {
@@ -88,6 +89,11 @@ class LinkResource extends Resource
                 Tables\Columns\TextColumn::make('url')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label('Url referente')
+                    ->formatStateUsing(fn ($record) => url($record->slug)) // Concatenar la URL base con el slug
+                    ->copyable()
+                    ->copyMessage('Url referente copiado')
+                    ->copyMessageDuration(1500)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('qr_code_path')
                     ->searchable(),
@@ -110,6 +116,7 @@ class LinkResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

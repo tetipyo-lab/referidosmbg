@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+/**
+ * Ruta cuando envia el slug a validar y redirigir
+ */
+Route::get('/{slug}', [LinkController::class, 'validateSlug'])->name('link.validate');
