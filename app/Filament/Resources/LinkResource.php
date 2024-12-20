@@ -58,7 +58,7 @@ class LinkResource extends Resource
                     ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
                         $code = $get('referred_code') ?? '';
                         $base_url = $get('base_url') ?? '';
-                        $full_url = "{$base_url}?referred={$code}";
+                        $full_url = "{$base_url}link?referred={$code}";
                         $set('url', $full_url);
                     }),
                 Forms\Components\TextInput::make('url')
@@ -90,7 +90,7 @@ class LinkResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Url referente')
-                    ->formatStateUsing(fn ($record) => url($record->slug)) // Concatenar la URL base con el slug
+                    ->formatStateUsing(fn ($record) => url('link/' .$record->slug)) // Concatenar la URL base con el slug
                     ->copyable()
                     ->copyMessage('Url referente copiado')
                     ->copyMessageDuration(1500)

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,6 @@ Route::get('/', function () {
 /**
  * Ruta cuando envia el slug a validar y redirigir
  */
-Route::get('/{slug}', [LinkController::class, 'validateSlug'])->name('link.validate');
+Route::get('link/{slug}', [LinkController::class, 'validateSlug'])->name('link.validate');
+
+Route::get('page', [PageController::class, 'index'])->name('page');
