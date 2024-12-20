@@ -23,6 +23,9 @@ class User extends Authenticatable
         'password',
         'referral_code',
         'referred_by',
+        'profile_photo',
+        'phone',
+        'agent_npn',
     ];
 
     /**

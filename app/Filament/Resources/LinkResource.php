@@ -90,7 +90,7 @@ class LinkResource extends Resource
                 CopyAction::make()
                 ->label("Copy link")
                 ->color('default')
-                ->copyable(fn ($record) => url($record->slug)),
+                ->copyable(fn ($record) => url('link/'.$record->slug)),
                 Tables\Actions\EditAction::make(),
 
             ])

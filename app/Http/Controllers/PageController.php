@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class PageController extends Controller
 {
     public function index(Request $request)
     {
-        // Obtener todos los parámetros enviados como query string
-        $queryParams = $request->all();
+        $validated = $request->validate([
+            'referred' => 'required|string|max:255',
+        ]);
 
-        // Obtener parámetros específicos (si los necesitas)
-        $param1 = $request->input('param1', 'default_value'); // Devuelve 'default_value' si no existe
-        $param2 = $request->input('param2');
+        $referredCode = $request->input("referred");
+        $agente = User::firstWhere("referral_code",$referredCode);
 
-        // Retornar la vista con los datos
-        return view('pages.form', compact('queryParams', 'param1', 'param2'));
+        return view('pages.form',compact('agente'));
     }
 }

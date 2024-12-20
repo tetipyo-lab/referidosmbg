@@ -54,6 +54,34 @@ class UserResource extends Resource
                     ->multiple(false) // Permitir seleccionar solo un rol
                     ->preload() // Cargar los datos al cargar el formulario
                     ->required(),
+                // Campo para el teléfono
+                Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono')
+                    ->required()
+                    ->tel() // Campo de tipo teléfono
+                    ->maxLength(15)
+                    ->placeholder('+1 (555) 123-4567'),
+
+                // Campo para Agent NPN
+                Forms\Components\TextInput::make('agent_npn')
+                    ->label('NPN del Agente')
+                    ->required()
+                    ->numeric() // Asegura que solo permita números
+                    ->maxLength(20),
+
+                // Campo para la foto de perfil
+                Forms\Components\FileUpload::make('profile_photo')
+                    ->label('Foto de Perfil')
+                    ->image()
+                    ->directory('profile_photos')
+                    ->disk('public')
+                    ->visibility('public')
+                    ->hint('Sube una imagen para tu foto de perfil')
+                    ->rules('mimes:jpeg,png,jpg', 'max:2048')
+                    ->imageEditor()
+                    ->imageEditorViewportWidth('1920')
+                    ->imageEditorViewportHeight('1080'),
+
                     
             ]);
     }
