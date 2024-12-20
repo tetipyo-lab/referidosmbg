@@ -17,6 +17,9 @@ use App\Models\User;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Actions\Action;
+use Webbingbrasil\FilamentCopyActions\Tables\CopyableTextColumn;
+use Webbingbrasil\FilamentCopyActions\Tables\Actions\CopyAction;
 
 class LinkResource extends Resource
 {
@@ -29,7 +32,7 @@ class LinkResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('Referente')
+                    ->label('User')
                     ->options(function () {
                         // Verifica si el usuario autenticado es un Admin
                         if (Auth::user()?->roles()->where('name', 'Admin')->exists()) {
@@ -38,37 +41,15 @@ class LinkResource extends Resource
                         return [];
                     })
                     ->hidden(fn () => !Auth::user()?->roles()->where('name', 'Admin')->exists()) // Hace el campo invisible si no es Admin
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {//Si soy Agente cargo el referral_code desde la BD
-                        $user = User::find($state);
-                        $set('referred_code', $user ? $user->referral_code : null);
-                    }),
-                Forms\Components\TextInput::make('referred_code')
-                    ->label('Referred Code')
-                    ->readOnly()
-                    ->required()
-                    ->default(fn ($get) => $get('referred_code') ?: Auth::user()->referral_code),
-                Forms\Components\TextInput::make('base_url')
-                    ->label('Url')
-                    ->placeholder('https://mipagina.com/')
-                    ->required()
-                    ->maxLength(2083)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                        $code = $get('referred_code') ?? '';
-                        $base_url = $get('base_url') ?? '';
-                        $full_url = "{$base_url}link?referred={$code}";
-                        $set('url', $full_url);
-                    }),
+                    ->required(),
                 Forms\Components\TextInput::make('url')
-                    ->label('Redirect URL')
-                    ->readOnly(),
+                    ->label('Referred page url')
+                    ->placeholder('https://milanding.com/')
+                    ->required(),
                 Forms\Components\TextInput::make('slug')
-                    ->label('Tracking Code')
-                    ->default(fn () => Link::generateSlug())
-                    ->readOnly()
-                    ->maxLength(255),
+                    ->label('Share URL')
+                    ->default(fn ($state) => $state ? $state : Link::generateSlug()) // Si el estado ya existe, usarlo; de lo contrario, generar un nuevo slug
+                    ->hidden(),
                 Forms\Components\TextInput::make('qr_code_path')
                     ->maxLength(2083)
                     ->default(null)
@@ -88,15 +69,6 @@ class LinkResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('url')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('Url referente')
-                    ->formatStateUsing(fn ($record) => url('link/' .$record->slug)) // Concatenar la URL base con el slug
-                    ->copyable()
-                    ->copyMessage('Url referente copiado')
-                    ->copyMessageDuration(1500)
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('qr_code_path')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('clicks')
                     ->numeric()
                     ->sortable(),
@@ -115,8 +87,12 @@ class LinkResource extends Resource
                 //
             ])
             ->actions([
+                CopyAction::make()
+                ->label("Copy link")
+                ->color('default')
+                ->copyable(fn ($record) => url($record->slug)),
                 Tables\Actions\EditAction::make(),
-                
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

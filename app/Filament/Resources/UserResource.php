@@ -42,7 +42,7 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('referral_code')
                     ->label('Referral Code')
-                    ->default(fn () => User::generateReferralCode())
+                    ->default(User::generateReferralCode())
                     ->readOnlyOn('edit'),
                 Forms\Components\Select::make('referred_by')
                     ->label('Referred By')

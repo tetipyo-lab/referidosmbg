@@ -16,7 +16,7 @@ use App\Http\Controllers\PageController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin'); // Redirige a la ruta /admin
 });
 /**
  * Ruta cuando envia el slug a validar y redirigir
