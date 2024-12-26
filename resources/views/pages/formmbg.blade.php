@@ -33,8 +33,8 @@
 <body>
     <div class="container">
          <!-- Logo centrado -->
-         <div class="text-center mb-4">
-            <img src="https://www.mariobarrera.us/wp-content/uploads/2020/07/Mario-Barrera-Agente-de-aseguranzas.png" alt="Logo de Mario Barrera" class="logo">
+         <div class="text-center mb-4  ">
+            <img src="https://www.mariobarrera.us/wp-content/uploads/2020/07/Mario-Barrera-Agente-de-aseguranzas.png" alt="Logo de Mario Barrera" class="logo" style="max-width: 90%;">
         </div>
 
         <!-- Información del agente -->
