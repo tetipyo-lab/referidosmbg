@@ -49,7 +49,7 @@
             </div>
              <!-- Espacio para la foto -->
              <div class="col-md-4 text-center mb-4">
-                <img src="{{ Storage::url('public/'.$agente->profile_photo) }}" alt="Foto del Agente" class="img-fluid rounded-circle"  style="width: 35%;">
+                <img src="{{ Storage::url('public/'.$agente->profile_photo) }}" alt="Foto del Agente" class="img-fluid rounded-rectangule"  style="width: 35%;">
             </div>
         </div>
         <hr>
