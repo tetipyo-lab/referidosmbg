@@ -45,8 +45,6 @@
             <img src="https://www.mariobarrera.us/wp-content/uploads/2020/07/Mario-Barrera-Agente-de-aseguranzas.png" alt="Logo de Mario Barrera" class="logo" style="max-width: 90%;">
         </div>
 
-        <hr>
-
         <!-- Video de YouTube -->
         <div class="container no-margin text-white" style="background-color: #0769b4; padding: 20px;">
             <h2 class="text-center mb-4">Gracias Por Confiar en Nosotros</h2>
