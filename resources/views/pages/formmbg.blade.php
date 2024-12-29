@@ -134,7 +134,7 @@
                 </div>
                 
                 <!-- City - Ocupa 6 columnas -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label" for="city">City / Ciudad</label>
                     <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="required" name="city">
                     <div class="invalid-feedback" data-sb-feedback="city:required">City is required.</div>
@@ -148,7 +148,7 @@
                 </div>
                 
                 <!-- Zip Code - Ocupa 2 columnas -->
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <label class="form-label" for="zipCode">Zip Code / Código postal</label>
                     <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="required" name="code">
                     <div class="invalid-feedback" data-sb-feedback="zipCode:required">Zip Code is required.</div>
@@ -182,7 +182,7 @@
                 </div>
                 
                 <!-- City - Ocupa 6 columnas -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label" for="city">City / Ciudad</label>
                     <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="required" name="cf_967">
                     <div class="invalid-feedback" data-sb-feedback="city:required">City is required.</div>
@@ -196,7 +196,7 @@
                 </div>
                 
                 <!-- Zip Code - Ocupa 2 columnas -->
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <label class="form-label" for="zipCode">Zip Code / Código Postal</label>
                     <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="required" name="cf_971">
                     <div class="invalid-feedback" data-sb-feedback="zipCode:required">Zip Code is required.</div>
@@ -231,7 +231,7 @@
                 </div>
                 
                 <!-- City - Ocupa 6 columnas -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label" for="city">City / Ciudad</label>
                     <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="required" name="cf_975">
                     <div class="invalid-feedback" data-sb-feedback="city:required">City is required.</div>
@@ -245,7 +245,7 @@
                 </div>
                 
                 <!-- Zip Code - Ocupa 2 columnas -->
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <label class="form-label" for="zipCode">Zip Code / Código Postal</label>
                     <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="required" name="cf_979">
                     <div class="invalid-feedback" data-sb-feedback="zipCode:required">Zip Code is required.</div>

@@ -11,7 +11,7 @@ class PageController extends Controller
     {
         if($request->has('error')){
             $errorMsg = $request->error;
-            return view('pages.result',compact('errorMsg'));
+            return view('pages.formerror',compact('errorMsg'));
         }elseif($request->has('referred')){
             $referredCode = $request->input("referred");
             $agente = User::firstWhere("referral_code",$referredCode);
@@ -19,7 +19,7 @@ class PageController extends Controller
             return view('pages.formmbg',compact('agente'));
         }elseif($request->has('success')){
             $okMsg = "Form saved successfully ";
-            return view('pages.result',compact('okMsg'));
+            return view('pages.formok',compact('okMsg'));
         }
     }
 }
