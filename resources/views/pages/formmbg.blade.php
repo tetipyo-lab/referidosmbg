@@ -187,12 +187,12 @@
                 <!-- Contacto -->
                 <div class="col-md-6">
                     <label class="form-label" for="emailAddressPrimary">Email Address / Correo Electrónico</label>
-                    <input class="form-control" id="emailAddressPrimary" type="email" placeholder="Email Address" data-sb-validations="" name="email">
+                    <input class="form-control" id="emailAddressPrimary" type="email" placeholder="Email Address" data-sb-validations="" name="cf_987">
                     
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" for="phonePrimary">Phone / Teléfono</label>
-                    <input class="form-control phoneValid" id="phonePrimary" type="text" placeholder="Phone number with country code" data-sb-validations="" name="mobile">
+                    <input class="form-control phoneValid" id="phonePrimary" type="text" placeholder="Phone number with country code" data-sb-validations="" name="cf_989">
                 </div>
             </div>
             <hr>
@@ -248,12 +248,12 @@
                 <!-- Contacto -->
                 <div class="col-md-6">
                     <label class="form-label" for="emailAddressContingent">Email Address / Correo Electrónico</label>
-                    <input class="form-control" id="emailAddressContingent" type="email" placeholder="Email Address" data-sb-validations="" name="email">
+                    <input class="form-control" id="emailAddressContingent" type="email" placeholder="Email Address" data-sb-validations="" name="cf_991">
                     
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" for="phoneContingent">Phone / Teléfono</label>
-                    <input class="form-control phoneValid" id="phoneContingent" type="text" placeholder="Phone number with country code" data-sb-validations="" name="mobile">
+                    <input class="form-control phoneValid" id="phoneContingent" type="text" placeholder="Phone number with country code" data-sb-validations="" name="cf_993">
                 </div>
             </div>
             <hr>
