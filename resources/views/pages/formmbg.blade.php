@@ -45,14 +45,14 @@
             <div class="col-md-8" style="background-color: #4BB6B3; color: white; display: flex; justify-content: center; align-items: center;">
                 <div class="text-center mb-4">
                     <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Agent Information</h2>
-                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">Name: <strong style="font-weight: bold; color: white;">Mario Barrera</strong></p>
-                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">NPN Agent: <strong style="font-weight: bold; color: white;">7700000739694</strong></p>
+                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">Name: <strong style="font-weight: bold; color: white;">{{$agente->name}}</strong></p>
+                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">NPN Agent: <strong style="font-weight: bold; color: white;">{{$agente->agent_npn}}</strong></p>
                 </div>
             </div>
             
              <!-- Espacio para la foto -->
             <div class="col-md-4 text-center mb-4" style="background-color: #4BB6B3; height: 100%; display: flex; justify-content: center; align-items: center;">
-                <img src="/storage/profile_photos/01JG2FRV7MK0ACN5T9538H1E58.jpg" alt="Foto del Agente" class="img-fluid rounded-rectangule" style="width: 80%; height: 100%; object-fit: cover; border: 5px solid white; margin: 2px;">
+                <img src="{{ Storage::url($agente->profile_photo) }}" alt="Foto del Agente" class="img-fluid rounded-rectangule" style="width: 80%; height: 100%; object-fit: cover; border: 5px solid white; margin: 2px;">
             </div>
 
         </div>
@@ -65,6 +65,7 @@
             <input type="hidden" name="publicid" value="1cd093b59e60d84c4e200e4645ea98f9">
             <input type="hidden" name="urlencodeenable" value="1">
             <input type="hidden" name="name" value="Occidental Life Form">
+            <input name="cf_949" type="hidden" value="{{ now()->toDateString() }}">
             <!-- Hidden Fields -->
                
             <div class="row g-3" style="background-color: #0769b4; color: white; padding: 20px; font-family: Arial, sans-serif;">
@@ -72,7 +73,7 @@
                 <!-- Nombre y Apellido -->
                 <div class="col-md-6">
                     <label class="form-label" for="firstName">First Name / Nombre</label>
-                    <input class="form-control" id="firstname" name="firstname" type="text" placeholder="First Name / Nombre" data-sb-validations="required">
+                    <input class="form-control" id="firstName" name="firstname" type="text" placeholder="First Name / Nombre" data-sb-validations="required">
                     <div class="invalid-feedback" data-sb-feedback="firstName:required">First Name is required.</div>
                 </div>
                 <div class="col-md-6">
@@ -84,20 +85,32 @@
                 <!-- Fechas y Edad -->
                 <div class="col-md-4">
                     <label class="form-label" for="dobMmDdYyyy">DOB / Fecha de Nacimiento</label>
-                    <input class="form-control" id="dobMmDdYyyy" name="cf_853" type="date" placeholder="DOB (mm/dd/yyyy)" data-sb-validations="required">
-                    <div class="invalid-feedback" data-sb-feedback="dobMmDdYyyy:required">DOB (mm/dd/yyyy) is required.</div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select class="form-control" id="dobMonth" name="dobMonth" data-sb-validations="required">
+                                <option value="">MM</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                @endfor
+                            </select>
+                            <div class="invalid-feedback" data-sb-feedback="dobMonth:required">Month is required.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" id="dobDay" name="dobDay" data-sb-validations="required">
+                                <option value="">DD</option>
+                                @for ($i = 1; $i <= 31; $i++)
+                                    <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                @endfor
+                            </select>
+                            <div class="invalid-feedback" data-sb-feedback="dobDay:required">Day is required.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="form-control" id="dobYear" name="dobYear" type="text" placeholder="YYYY" maxlength="4" data-sb-validations="required">
+                            <div class="invalid-feedback" data-sb-feedback="dobYear:required">Year is required.</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label" for="appDate">App date / Fecha de aplicación (mm/dd/yyyy)</label>
-                    <input class="form-control" id="appDate" name="cf_949" type="date" placeholder="App date (mm/dd/yyyy)" data-sb-validations="required" pattern="\d{2}/\d{2}/\d{4}" value="2024-12-27">
-                    <div class="invalid-feedback" data-sb-feedback="appDate:required">App date (mm/dd/yyyy) is required.</div>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label" for="age">Age / Edad</label>
-                    <input class="form-control" id="age" type="number" placeholder="Age / Edad" data-sb-validations="required" name="cf_905">
-                    <div class="invalid-feedback" data-sb-feedback="age:required">Age is required.</div>
-                </div>
-        
+                       
                 <!-- SSN y Occupation -->
                 <div class="col-md-6">
                     <label class="form-label" for="ssn">SSN / ITIN</label>
@@ -113,13 +126,12 @@
                 <!-- Contacto -->
                 <div class="col-md-6">
                     <label class="form-label" for="emailAddress">Email Address / Correo Electrónico</label>
-                    <input class="form-control" id="emailAddress" type="email" placeholder="Email Address" data-sb-validations="required,email" name="email">
+                    <input class="form-control" id="emailAddress" type="email" placeholder="Email Address" data-sb-validations="required" name="email">
                     <div class="invalid-feedback" data-sb-feedback="emailAddress:required">Email Address is required.</div>
-                    <div class="invalid-feedback" data-sb-feedback="emailAddress:email">Email Address Email is not valid.</div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" for="phone">Phone / Teléfono</label>
-                    <input class="form-control" id="phone" type="text" placeholder="Phone" data-sb-validations="required" name="mobile">
+                    <input class="form-control phoneValid" id="phone" type="text" placeholder="Phone number with country code" data-sb-validations="required" name="mobile">
                     <div class="invalid-feedback" data-sb-feedback="phone:required">Phone is required.</div>
                 </div>
             </div>
@@ -159,16 +171,16 @@
             <div class="row g-3" style="background-color: #4BB6B3; color: white; padding: 20px; font-family: Arial, sans-serif;">
                 <h4 class="mb-3" style="">Primary Beneficiary / Beneficiario Principal</h4>
                 <div class="col-md-6">
-                    <label class="form-label" for="nameSPrimaryBeneficiary">Name(s) Primary Beneficiary / Nombre Beneficiario</label>
-                    <input class="form-control" id="nameSPrimaryBeneficiary" type="text" placeholder="Name(s) Primary Beneficiary" data-sb-validations="" name="cf_955">
+                    <label class="form-label" for="nameSPrimaryBeneficiary">Name(s) / Nombre(s)</label>
+                    <input class="form-control" id="nameSPrimaryBeneficiary" type="text" data-sb-validations="" name="cf_955">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" for="beneficiaryExtra">-</label>
-                    <input class="form-control" id="beneficiaryExtra" type="text" placeholder="-" data-sb-validations="" name="cf_953">
+                    <label class="form-label" for="beneficiaryExtra">Last Name(s) / Apellido(s)</label>
+                    <input class="form-control" id="beneficiaryExtra" type="text" data-sb-validations="" name="cf_953">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="relationship">Relationship / Parentesco</label>
-                    <input class="form-control" id="relationship" type="text" placeholder="Relationship" data-sb-validations="" name="cf_957">
+                    <input class="form-control" id="relationship" type="text" data-sb-validations="" name="cf_957">
                 </div>
             </div>
             <hr>
@@ -177,28 +189,28 @@
                 <!-- Street Address - Ocupa toda la fila -->
                 <div class="col-12">
                     <label class="form-label" for="streetAddress">Street Address / Dirección</label>
-                    <input class="form-control" id="streetAddress" type="text" placeholder="Street Address" data-sb-validations="required" name="cf_965">
+                    <input class="form-control" id="streetAddress" type="text" data-sb-validations="required" name="cf_965">
                     <div class="invalid-feedback" data-sb-feedback="streetAddress:required">Street Address is required.</div>
                 </div>
                 
                 <!-- City - Ocupa 6 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="city">City / Ciudad</label>
-                    <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="required" name="cf_967">
+                    <input class="form-control" id="city" type="text" data-sb-validations="required" name="cf_967">
                     <div class="invalid-feedback" data-sb-feedback="city:required">City is required.</div>
                 </div>
                 
                 <!-- State - Ocupa 4 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="state">State / Estado</label>
-                    <input class="form-control" id="state" type="text" placeholder="State" data-sb-validations="required" name="cf_969">
+                    <input class="form-control" id="state" type="text" data-sb-validations="required" name="cf_969">
                     <div class="invalid-feedback" data-sb-feedback="state:required">State is required.</div>
                 </div>
                 
                 <!-- Zip Code - Ocupa 2 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="zipCode">Zip Code / Código Postal</label>
-                    <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="required" name="cf_971">
+                    <input class="form-control" id="zipCode" type="text" data-sb-validations="required" name="cf_971">
                     <div class="invalid-feedback" data-sb-feedback="zipCode:required">Zip Code is required.</div>
                 </div>
             </div>
@@ -208,16 +220,16 @@
                 <h4 class="mb-3">Contingent Beneficiary / Beneficiario Contingente</h4>
                 <!-- Beneficiario Principal -->
                 <div class="col-md-6">
-                    <label class="form-label" for="nameSContingetBeneficiary">Name(s) Contingent Beneficiary / Nombre del Beneficiario Contingente</label>
-                    <input class="form-control" id="nameSContingentBeneficiary" type="text" placeholder="Name(s) Primary Beneficiary" data-sb-validations="" name="cf_959">
+                    <label class="form-label" for="nameSContingetBeneficiary">Name(s) / Nombre(s)</label>
+                    <input class="form-control" id="nameSContingentBeneficiary" type="text" data-sb-validations="" name="cf_959">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" for="beneficiaryExtra">-</label>
-                    <input class="form-control" id="beneficiaryExtra" type="text" placeholder="-" data-sb-validations="" name="cf_961">
+                    <label class="form-label" for="beneficiaryExtra">Last Name(s) / Apellido(s)</label>
+                    <input class="form-control" id="beneficiaryExtra" type="text" data-sb-validations="" name="cf_961">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="relationship">Relationship / Parantesco</label>
-                    <input class="form-control" id="relationship" type="text" placeholder="Relationship" data-sb-validations="" name="cf_963">
+                    <input class="form-control" id="relationship" type="text" data-sb-validations="" name="cf_963">
                 </div>
             </div>
             <hr>
@@ -226,36 +238,32 @@
                 <!-- Street Address - Ocupa toda la fila -->
                 <div class="col-12">
                     <label class="form-label" for="streetAddress">Street Address / Dirección </label>
-                    <input class="form-control" id="streetAddress" type="text" placeholder="Street Address" data-sb-validations="required" name="cf_973">
-                    <div class="invalid-feedback" data-sb-feedback="streetAddress:required">Street Address is required.</div>
+                    <input class="form-control" id="streetAddress" type="text" placeholder="Street Address" data-sb-validations="" name="cf_973">
                 </div>
                 
                 <!-- City - Ocupa 6 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="city">City / Ciudad</label>
-                    <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="required" name="cf_975">
-                    <div class="invalid-feedback" data-sb-feedback="city:required">City is required.</div>
+                    <input class="form-control" id="city" type="text" placeholder="City" data-sb-validations="" name="cf_975">
                 </div>
                 
                 <!-- State - Ocupa 4 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="state">State / Estado</label>
-                    <input class="form-control" id="state" type="text" placeholder="State" data-sb-validations="required" name="cf_977">
-                    <div class="invalid-feedback" data-sb-feedback="state:required">State is required.</div>
+                    <input class="form-control" id="state" type="text" placeholder="State" data-sb-validations="" name="cf_977">
                 </div>
                 
                 <!-- Zip Code - Ocupa 2 columnas -->
                 <div class="col-md-4">
                     <label class="form-label" for="zipCode">Zip Code / Código Postal</label>
-                    <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="required" name="cf_979">
-                    <div class="invalid-feedback" data-sb-feedback="zipCode:required">Zip Code is required.</div>
+                    <input class="form-control" id="zipCode" type="text" placeholder="Zip Code" data-sb-validations="" name="cf_979">
                 </div>
             </div>
             <!-- Valores ocultos para el formulario NO REMOVER XXX -->
-            <input type="hidden" name="cf_941" data-label="" value="QFETSZ7P2N">
+            <input type="hidden" name="cf_941" data-label="" value="{{$agente->referral_code}}">
             <input type="hidden" name="cf_929" data-label="" value="occ_life_policy">
             <!-- Botón de Enviar -->
-            <button type="submit" class="btn btn-primary w-100 mt-3">Enviar Solicitud</button>
+            <button type="button" id="btnSubmit" class="btn btn-primary w-100 mt-3">Enviar Solicitud</button>
         </form>
 
         <footer class="bg-dark text-white text-center py-4" style="background-color: #0769b4;">
@@ -265,7 +273,8 @@
     
     <!-- Bootstrap 5 JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/occidental/form-validate.js') }}"></script>    
 </body>
 </html>
