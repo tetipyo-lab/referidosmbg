@@ -87,7 +87,7 @@
                     <label class="form-label" for="dobMmDdYyyy">DOB / Fecha de Nacimiento</label>
                     <div class="row">
                         <div class="col-md-4">
-                            <select class="form-control" id="dobMonth" name="dobMonth" data-sb-validations="required">
+                            <select class="form-control" id="dobMonth" name="cf_981" data-sb-validations="required">
                                 <option value="">MM</option>
                                 @for ($i = 1; $i <= 12; $i++)
                                     <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
@@ -96,7 +96,7 @@
                             <div class="invalid-feedback" data-sb-feedback="dobMonth:required">Month is required.</div>
                         </div>
                         <div class="col-md-4">
-                            <select class="form-control" id="dobDay" name="dobDay" data-sb-validations="required">
+                            <select class="form-control" id="dobDay" name="cf_983" data-sb-validations="required">
                                 <option value="">DD</option>
                                 @for ($i = 1; $i <= 31; $i++)
                                     <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
@@ -105,7 +105,7 @@
                             <div class="invalid-feedback" data-sb-feedback="dobDay:required">Day is required.</div>
                         </div>
                         <div class="col-md-4">
-                            <input class="form-control" id="dobYear" name="dobYear" type="text" placeholder="YYYY" maxlength="4" data-sb-validations="required">
+                            <input class="form-control" id="dobYear" name="cf_985" type="text" placeholder="YYYY" maxlength="4" data-sb-validations="required">
                             <div class="invalid-feedback" data-sb-feedback="dobYear:required">Year is required.</div>
                         </div>
                     </div>
@@ -183,6 +183,18 @@
                     <input class="form-control" id="relationship" type="text" data-sb-validations="" name="cf_957">
                 </div>
             </div>
+            <div class="row g-3" style="background-color: #4BB6B3; color: white; padding: 20px; font-family: Arial, sans-serif;">
+                <!-- Contacto -->
+                <div class="col-md-6">
+                    <label class="form-label" for="emailAddressPrimary">Email Address / Correo Electrónico</label>
+                    <input class="form-control" id="emailAddressPrimary" type="email" placeholder="Email Address" data-sb-validations="" name="email">
+                    
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="phonePrimary">Phone / Teléfono</label>
+                    <input class="form-control phoneValid" id="phonePrimary" type="text" placeholder="Phone number with country code" data-sb-validations="" name="mobile">
+                </div>
+            </div>
             <hr>
             <div class="row g-3" style="background-color: #4BB6B3; color: white; padding: 20px; font-family: Arial, sans-serif;">
                 <h4 class="mb-3" >Address</h4>
@@ -216,7 +228,7 @@
             </div>
             <hr>
             <!-- Información del Seguro -->
-            <div class="row g-3">
+            <div class="row g-3" style="padding: 20px;">
                 <h4 class="mb-3">Contingent Beneficiary / Beneficiario Contingente</h4>
                 <!-- Beneficiario Principal -->
                 <div class="col-md-6">
@@ -232,8 +244,20 @@
                     <input class="form-control" id="relationship" type="text" data-sb-validations="" name="cf_963">
                 </div>
             </div>
+            <div class="row g-3" style="padding: 20px;" >
+                <!-- Contacto -->
+                <div class="col-md-6">
+                    <label class="form-label" for="emailAddressContingent">Email Address / Correo Electrónico</label>
+                    <input class="form-control" id="emailAddressContingent" type="email" placeholder="Email Address" data-sb-validations="" name="email">
+                    
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="phoneContingent">Phone / Teléfono</label>
+                    <input class="form-control phoneValid" id="phoneContingent" type="text" placeholder="Phone number with country code" data-sb-validations="" name="mobile">
+                </div>
+            </div>
             <hr>
-            <div class="row g-3">
+            <div class="row g-3" style="padding: 20px;">
                 <h4 class="mb-3">Address</h4>
                 <!-- Street Address - Ocupa toda la fila -->
                 <div class="col-12">
