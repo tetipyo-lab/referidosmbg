@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\VtigerLeadsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,4 @@ Route::get('/', function () {
 Route::get('link/{slug}', [LinkController::class, 'validateSlug'])->name('link.validate');
 
 Route::get('page', [PageController::class, 'index'])->name('page');
+Route::get('vtiger', [VtigerLeadsController::class, 'index'])->name('vtiger');
