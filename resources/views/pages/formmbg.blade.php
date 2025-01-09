@@ -287,7 +287,7 @@
             <input type="hidden" name="cf_941" data-label="" value="{{$agente->referral_code}}">
             <input type="hidden" name="cf_929" data-label="" value="occ_life_policy">
             <!-- Botón de Enviar -->
-            <button type="button" id="btnSubmit" class="btn btn-primary w-100 mt-3">Enviar Solicitud</button>
+            <button type="button" id="btnSubmit" class="btn btn-primary w-100 mt-3">Submit / Enviar Solicitud</button>
         </form>
 
         <footer class="bg-dark text-white text-center py-4" style="background-color: #0769b4;">
