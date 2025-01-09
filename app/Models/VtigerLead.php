@@ -46,11 +46,15 @@ class VtigerLead extends Model
         return $this->hasOne(VtigerLeadaddress::class, 'leadaddressid', 'leadid');
     }
 
-    public function scopeWithCustomField($query, $field, $value)
+    public function scopeWithCustomField($query, $field, $operator, $value = null)
     {
+        if ($value === null) {
+            $value = $operator;
+            $operator = '=';
+        }
         return $query->join('vtiger_leadscf', 'vtiger_leaddetails.leadid', '=', 'vtiger_leadscf.leadid')
             ->join('vtiger_crmentity', 'vtiger_leaddetails.leadid', '=', 'vtiger_crmentity.crmid')
-            ->where("vtiger_leadscf.{$field}", $value)
+            ->where("vtiger_leadscf.{$field}",$operator, $value)
             ->where('vtiger_crmentity.deleted', 0)
             ->select('vtiger_leaddetails.*');
     }
