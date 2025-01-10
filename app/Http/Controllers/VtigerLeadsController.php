@@ -5,8 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\VtigerLead;
 
+use App\Services\TextLinkSmsService;
+
 class VtigerLeadsController extends Controller
 {
+    protected $textLinkSmsService;
+
+    public function __construct(TextLinkSmsService $textLinkSmsService)
+    {
+        $this->textLinkSmsService = $textLinkSmsService;
+    }
+
     public function index(){
         // Uso del scope
         $leads = VtigerLead::withCustomField('cf_853','like','%-01-9')->get();
@@ -23,4 +32,21 @@ class VtigerLeadsController extends Controller
             }
         }
     }
+
+    public function sendSms(Request $request)
+    {
+        $request->validate([
+            'to' => 'required|string',
+            'message' => 'required|string|max:160',
+        ]);
+
+        $response = $this->textLinkSmsService->sendSms($request->to, $request->message);
+        
+        if (isset($response['ok']) && $response['ok']) {
+            return response()->json(['message' => 'SMS enviado correctamente']);
+        }
+
+        return response()->json(['error' => $response['error'] ?? 'Error desconocido'], 500);
+    }
+
 }

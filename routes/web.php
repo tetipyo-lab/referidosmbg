@@ -26,3 +26,13 @@ Route::get('link/{slug}', [LinkController::class, 'validateSlug'])->name('link.v
 
 Route::get('page', [PageController::class, 'index'])->name('page');
 Route::get('vtiger', [VtigerLeadsController::class, 'index'])->name('vtiger');
+
+
+
+// Ruta para mostrar el formulario
+Route::get('/send-sms', function () {
+    return view('sms/send');
+})->name('sms.form');
+
+// Ruta para procesar el envío de SMS
+Route::post('/send-sms', [VtigerLeadsController::class, 'sendSms'])->name('send.sms');
