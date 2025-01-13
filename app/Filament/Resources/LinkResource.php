@@ -48,7 +48,7 @@ class LinkResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('slug')
                     ->label('Share URL')
-                    ->default(fn ($state) => $state ? $state : Link::generateSlug()) // Si el estado ya existe, usarlo; de lo contrario, generar un nuevo slug
+                    //->default(fn ($state) => $state ? $state : Link::generateSlug()) // Si el estado ya existe, usarlo; de lo contrario, generar un nuevo slug
                     ->hidden(),
                 Forms\Components\TextInput::make('qr_code_path')
                     ->maxLength(2083)
@@ -90,7 +90,7 @@ class LinkResource extends Resource
                 CopyAction::make()
                 ->label("Copy link")
                 ->color('default')
-                ->copyable(fn ($record) => url('link/'.$record->slug)),
+                ->copyable(fn ($record) => "https://linke.to/".$record->slug),
                 Tables\Actions\EditAction::make(),
 
             ])

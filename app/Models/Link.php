@@ -45,8 +45,8 @@ class Link extends Model
     {
         parent::boot();
 
-        static::creating(function ($link) {
+        /*static::creating(function ($link) {
             $link->slug = self::generateSlug();
-        });
+        });*/
     }
 }
