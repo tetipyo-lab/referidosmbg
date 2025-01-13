@@ -31,44 +31,41 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono')
+                    ->required()
+                    ->tel() // Campo de tipo teléfono
+                    ->maxLength(15)
+                    ->placeholder('+1 (555) 123-4567'),    
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->hiddenOn('edit')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('referral_code')
-                    ->label('Referral Code')
-                    ->default(User::generateReferralCode())
-                    ->readOnlyOn('edit'),
-                Forms\Components\Select::make('referred_by')
-                    ->label('Referred By')
-                    ->relationship('referredBy', 'name')
-                    ->searchable(),
                 Forms\Components\Select::make('roles')
                     ->label('Roles')
                     ->relationship('roles', 'name') // Relación con el modelo Role y mostrar el campo 'name'
                     ->multiple(false) // Permitir seleccionar solo un rol
                     ->preload() // Cargar los datos al cargar el formulario
                     ->required(),
-                // Campo para el teléfono
-                Forms\Components\TextInput::make('phone')
-                    ->label('Teléfono')
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->hiddenOn('edit')
+                    ->default('password1310')
                     ->required()
-                    ->tel() // Campo de tipo teléfono
-                    ->maxLength(15)
-                    ->placeholder('+1 (555) 123-4567'),
-
+                    ->maxLength(255),
+                Forms\Components\Select::make('referred_by')
+                    ->label('Referred By')
+                    ->relationship('referredBy', 'name')
+                    ->searchable(),
+                Forms\Components\TextInput::make('referral_code')
+                    ->label('Referral Code')
+                    ->default(User::generateReferralCode())
+                    ->readOnlyOn('edit'),
                 // Campo para Agent NPN
                 Forms\Components\TextInput::make('agent_npn')
                     ->label('NPN del Agente')
-                    ->required()
                     ->numeric() // Asegura que solo permita números
                     ->maxLength(20),
-
                 // Campo para la foto de perfil
                 Forms\Components\FileUpload::make('profile_photo')
                     ->label('Foto de Perfil')

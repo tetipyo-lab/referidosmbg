@@ -32,7 +32,7 @@ class LinkResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('User')
+                    ->label('User/Referrer')
                     ->options(function () {
                         // Verifica si el usuario autenticado es un Admin
                         if (Auth::user()?->roles()->where('name', 'Admin')->exists()) {
@@ -69,9 +69,9 @@ class LinkResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('url')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('clicks')
+                /*Tables\Columns\TextColumn::make('clicks')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable(),*/
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
