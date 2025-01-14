@@ -15,7 +15,7 @@ class CreateLinksTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('url', 2083);
-            $table->string('slug', 255)->unique();
+            $table->string('slug', 191)->unique()->nullable();
             $table->string('qr_code_path', 2083)->nullable();
             $table->unsignedInteger('clicks')->default(0);
             $table->boolean('is_active')->default(true);
