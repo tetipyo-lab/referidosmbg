@@ -12,9 +12,7 @@ class Link extends Model
     protected $fillable = [
         'user_id',
         'url',
-        'slug',
-        'qr_code_path',
-        'clicks',
+        'description',
         'is_active',
     ];
 
@@ -29,14 +27,14 @@ class Link extends Model
     /**
      * Generar un slug único para el link.
      */
-    public static function generateSlug()
+    /*public static function generateSlug()
     {
         do {
             $slug = str()->random(8); // Generar un slug único de 8 caracteres
         } while (self::where('slug', $slug)->exists());
 
         return $slug;
-    }
+    }*/
 
     /**
      * Sobrescribir el evento de creación para asignar un slug.

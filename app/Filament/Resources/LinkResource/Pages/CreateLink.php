@@ -14,7 +14,7 @@ class CreateLink extends CreateRecord
 {
     protected static string $resource = LinkResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+   /* protected function mutateFormDataBeforeCreate(array $data): array
     {
         try {
             // Log de datos iniciales
@@ -73,7 +73,7 @@ class CreateLink extends CreateRecord
             Log::error('Error al crear el registro: ' . $e->getMessage());
             throw $e;
         }
-    }
+    }*/
 
     protected function getRedirectUrl(): string
     {

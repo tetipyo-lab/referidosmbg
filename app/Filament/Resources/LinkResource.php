@@ -42,18 +42,14 @@ class LinkResource extends Resource
                     })
                     ->hidden(fn () => !Auth::user()?->roles()->where('name', 'Admin')->exists()) // Hace el campo invisible si no es Admin
                     ->required(),
+                Forms\Components\TextInput::make('description')
+                    ->label('Description')
+                    ->placeholder('Link description')
+                    ->required(),
                 Forms\Components\TextInput::make('url')
                     ->label('Referred page url')
                     ->placeholder('https://milanding.com/')
                     ->required(),
-                Forms\Components\TextInput::make('slug')
-                    ->label('Share URL')
-                    //->default(fn ($state) => $state ? $state : Link::generateSlug()) // Si el estado ya existe, usarlo; de lo contrario, generar un nuevo slug
-                    ->hidden(),
-                Forms\Components\TextInput::make('qr_code_path')
-                    ->maxLength(2083)
-                    ->default(null)
-                    ->visible(false),
                 Forms\Components\Toggle::make('is_active')
                     ->default(true)
                     ->required(),
@@ -64,14 +60,14 @@ class LinkResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('url')
                     ->searchable(),
-                /*Tables\Columns\TextColumn::make('clicks')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User/Referrer')
                     ->numeric()
-                    ->sortable(),*/
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -87,10 +83,10 @@ class LinkResource extends Resource
                 //
             ])
             ->actions([
-                CopyAction::make()
+                /*CopyAction::make()
                 ->label("Copy link")
                 ->color('default')
-                ->copyable(fn ($record) => "https://linke.to/".$record->slug),
+                ->copyable(fn ($record) => "https://linke.to/".$record->slug),*/
                 Tables\Actions\EditAction::make(),
 
             ])
