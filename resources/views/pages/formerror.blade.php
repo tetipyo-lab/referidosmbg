@@ -76,7 +76,7 @@
 
             <!-- Mensaje de error en lugar de la lista de beneficios -->
             <div class="text-center">
-                <h3 class="text-white">{{$errorMsg}}. Haz clic aquí para volver atrás.</h3>
+                <h3 class="text-white">{{$errorMsg}}.</h3>
                 <!-- Botón con fondo amarillo tipo Amazon y márgenes de 2px -->
                 <button onclick="window.history.back();" class="btn amazon-yellow btn-custom mt-3">Volver Atrás</button>
             </div>

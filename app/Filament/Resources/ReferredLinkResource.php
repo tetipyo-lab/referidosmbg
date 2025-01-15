@@ -15,12 +15,20 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
 use App\Models\Link;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Actions\Action;
+use Webbingbrasil\FilamentCopyActions\Tables\CopyableTextColumn;
+use Webbingbrasil\FilamentCopyActions\Tables\Actions\CopyAction;
 
 class ReferredLinkResource extends Resource
 {
     protected static ?string $model = ReferredLink::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cursor-arrow-rays';
+    
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -53,10 +61,12 @@ class ReferredLinkResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Referrer')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('link_id')
+                Tables\Columns\TextColumn::make('link.description')
+                    ->label('Link')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('slug')
@@ -64,12 +74,16 @@ class ReferredLinkResource extends Resource
                 Tables\Columns\TextColumn::make('short_links')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
-                    ->default(true),
+                    ->boolean(),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                CopyAction::make()
+                ->label("Copy link")
+                ->color('default')
+                ->copyable(fn ($record) => $record->short_links),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

@@ -26,6 +26,7 @@ class LinkResource extends Resource
     protected static ?string $model = Link::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
+    protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
     {
@@ -83,10 +84,6 @@ class LinkResource extends Resource
                 //
             ])
             ->actions([
-                /*CopyAction::make()
-                ->label("Copy link")
-                ->color('default')
-                ->copyable(fn ($record) => "https://linke.to/".$record->slug),*/
                 Tables\Actions\EditAction::make(),
 
             ])

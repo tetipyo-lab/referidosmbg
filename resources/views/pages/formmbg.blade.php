@@ -40,23 +40,25 @@
         </div>
 
         <!-- Información del agente -->
+        @if($agente && $role == 'Agent')
         <div class="row g-3" style="background-color: #4BB6B3; display: flex; justify-content: center; align-items: center;">
             <!-- Información del agente -->
             <div class="col-md-8" style="background-color: #4BB6B3; color: white; display: flex; justify-content: center; align-items: center;">
                 <div class="text-center mb-4">
                     <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Agent Information</h2>
-                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">Name: <strong style="font-weight: bold; color: white;">{{$agente->name}}</strong></p>
-                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">NPN Agent: <strong style="font-weight: bold; color: white;">{{$agente->agent_npn}}</strong></p>
+                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">Name: <strong style="font-weight: bold; color: white;">{{$agente->name ?? ""}}</strong></p>
+                    <p class="text-muted" style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">Agent phone: <strong style="font-weight: bold; color: white;">{{$agente->phone ?? ""}}</strong></p>
                 </div>
             </div>
-            
+            @if($agente->profile_photo)
              <!-- Espacio para la foto -->
             <div class="col-md-4 text-center mb-4" style="background-color: #4BB6B3; height: 100%; display: flex; justify-content: center; align-items: center;">
                 <img src="{{ Storage::url($agente->profile_photo) }}" alt="Foto del Agente" class="img-fluid rounded-rectangule" style="width: 80%; height: 100%; object-fit: cover; border: 5px solid white; margin: 2px;">
             </div>
-
+            @endif
         </div>
         <hr>
+        @endif
         <form id="__vtigerWebForm" name="Occidental Life Form" action="https://crm.callmbg.com/modules/Webforms/capture.php" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             <!-- Datos del Asegurado -->
 
@@ -284,7 +286,7 @@
                 </div>
             </div>
             <!-- Valores ocultos para el formulario NO REMOVER XXX -->
-            <input type="hidden" name="cf_941" data-label="" value="{{$agente->referral_code}}">
+            <input type="hidden" name="cf_941" data-label="" value="{{$agente->referral_code ?? ''}}">
             <input type="hidden" name="cf_929" data-label="" value="occ_life_policy">
             <!-- Botón de Enviar -->
             <button type="button" id="btnSubmit" class="btn btn-primary w-100 mt-3">Submit / Enviar Solicitud</button>

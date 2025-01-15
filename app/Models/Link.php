@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Link extends Model
 {
@@ -14,6 +15,8 @@ class Link extends Model
         'url',
         'description',
         'is_active',
+        'created_by',
+        'updated_by'
     ];
 
     /**
@@ -52,8 +55,19 @@ class Link extends Model
     {
         parent::boot();
 
-        /*static::creating(function ($link) {
-            $link->slug = self::generateSlug();
-        });*/
+        // Antes de crear un registro
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $model->created_by = Auth::id();
+                $model->updated_by = Auth::id();
+            }
+        });
+
+        // Antes de actualizar un registro
+        static::updating(function ($model) {
+            if (Auth::check()) {
+                $model->updated_by = Auth::id();
+            }
+        });
     }
 }

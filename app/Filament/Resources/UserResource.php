@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\TextInput;
 
 
 class UserResource extends Resource
@@ -23,6 +24,8 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?int $navigationSort = 40;
 
     public static function form(Form $form): Form
     {
@@ -36,7 +39,7 @@ class UserResource extends Resource
                     ->required()
                     ->tel() // Campo de tipo teléfono
                     ->maxLength(15)
-                    ->placeholder('+1 (555) 123-4567'),    
+                    ->placeholder('+15551234567'),    
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
@@ -118,6 +121,30 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('changePassword')
+                ->label('Change password')
+                ->icon('heroicon-o-key')
+                ->action(function (User $record, array $data): void {
+                    // Actualizar la contraseña del usuario
+                    $record->update([
+                        'password' => Hash::make($data['password']),
+                    ]);
+                })
+                ->form([
+                    TextInput::make('password')
+                        ->label('Nueva Contraseña')
+                        ->password()
+                        ->required()
+                        ->minLength(8)
+                        ->rules(['confirmed']),
+                    TextInput::make('password_confirmation')
+                        ->label('Confirmar Contraseña')
+                        ->password()
+                        ->required(),
+                ])
+                ->modalHeading('Cambiar Contraseña')
+                ->modalButton('Guardar Cambios')
+                ->requiresConfirmation(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
