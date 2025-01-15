@@ -72,6 +72,15 @@ class User extends Authenticatable
         return $this->hasMany(User::class, 'referred_by');
     }
 
+    // Add the following to the User model
+    /**
+     * Get all referred links created by the user.
+     */
+    public function referredLinks()
+    {
+        return $this->hasMany(ReferredLink::class);
+    }
+
     protected static function generateReferralCode(): string
     {
         // Generar un código único de 10 caracteres alfanuméricos

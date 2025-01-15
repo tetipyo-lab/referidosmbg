@@ -24,6 +24,15 @@ class Link extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Add the following to the Link model
+    /**
+     * Get all referred links associated with this link.
+     */
+    public function referredLinks()
+    {
+        return $this->hasMany(ReferredLink::class);
+    }
+
     /**
      * Generar un slug único para el link.
      */
