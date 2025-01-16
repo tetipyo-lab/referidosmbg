@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReferrerResource extends Resource
 {
     protected static ?string $model = ReferredLink::class;
-    protected static ?string $navigationLabel = 'Referrers';  // Cambia el nombre aquí
+    protected static ?string $navigationLabel = 'Create Referrer';  // Cambia el nombre aquí
     protected static ?string $navigationItemGroup = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationIcon = 'heroicon-c-user-group';
     public static function shouldRegisterNavigation(): bool
