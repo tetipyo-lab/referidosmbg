@@ -26,6 +26,7 @@ class LinkResource extends Resource
     protected static ?string $model = Link::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-link';
+
     protected static ?int $navigationSort = 20;
 
     public static function form(Form $form): Form
@@ -66,7 +67,7 @@ class LinkResource extends Resource
                 Tables\Columns\TextColumn::make('url')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('User/Referrer')
+                    ->label('Referrer')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')

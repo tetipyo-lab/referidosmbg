@@ -16,6 +16,8 @@ use App\Models\Link;
 use App\Models\ReferredLink;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 
 class ReferrerResource extends Resource
@@ -24,8 +26,10 @@ class ReferrerResource extends Resource
     protected static ?string $navigationLabel = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationItemGroup = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationIcon = 'heroicon-c-user-group';
-    
-
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->roles()->whereIn('name', ['Admin','Agent'])->exists();
+    }
     public static function form(Form $form): Form
     {
         return $form

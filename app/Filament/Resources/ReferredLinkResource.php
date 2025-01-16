@@ -30,6 +30,11 @@ class ReferredLinkResource extends Resource
     
     protected static ?int $navigationSort = 10;
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->ownedByUser();
+    }
     public static function form(Form $form): Form
     {
         return $form

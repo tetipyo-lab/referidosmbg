@@ -36,17 +36,13 @@ class Link extends Model
         return $this->hasMany(ReferredLink::class);
     }
 
-    /**
-     * Generar un slug único para el link.
-     */
-    /*public static function generateSlug()
+    public function scopeOwnedByUser($query)
     {
-        do {
-            $slug = str()->random(8); // Generar un slug único de 8 caracteres
-        } while (self::where('slug', $slug)->exists());
-
-        return $slug;
-    }*/
+        return $query->where(function($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhere('created_by', Auth::id());
+        });
+    }
 
     /**
      * Sobrescribir el evento de creación para asignar un slug.

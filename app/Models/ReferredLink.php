@@ -20,6 +20,14 @@ class ReferredLink extends Model
         return $this->belongsTo(Link::class);
     }
 
+    public function scopeOwnedByUser($query)
+    {
+        return $query->where(function($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhere('created_by', Auth::id());
+        });
+    }
+
     protected static function boot()
     {
         parent::boot();
