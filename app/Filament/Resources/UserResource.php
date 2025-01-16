@@ -43,7 +43,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(table: 'users', column: 'email')
+                    ->unique(
+                        table: 'users',
+                        column: 'email',
+                        ignoreRecord: true // Ignora el registro actual al editar
+                    )
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
                     ->label('Roles')
@@ -64,7 +68,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('referral_code')
                     ->label('Referral Code')
                     ->default(User::generateReferralCode())
-                    ->unique(table: 'users', column: 'referral_code')
+                    ->unique(
+                        table: 'users',
+                        column: 'referral_code',
+                        ignoreRecord: true // Ignora el registro actual al editar
+                    )
                     ->readOnlyOn('edit'),
                 // Campo para Agent NPN
                 Forms\Components\TextInput::make('agent_npn')
