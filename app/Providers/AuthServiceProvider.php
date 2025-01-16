@@ -16,6 +16,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Role::class => RolePolicy::class,
         ReferredLink::class => ReferredLinkPolicy::class,
+        Referrer::class => ReferrerPolicy::class,
     ];
 
     /**

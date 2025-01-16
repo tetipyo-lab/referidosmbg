@@ -43,6 +43,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
+                    ->unique(table: 'users', column: 'email')
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
                     ->label('Roles')
@@ -63,6 +64,7 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('referral_code')
                     ->label('Referral Code')
                     ->default(User::generateReferralCode())
+                    ->unique(table: 'users', column: 'referral_code')
                     ->readOnlyOn('edit'),
                 // Campo para Agent NPN
                 Forms\Components\TextInput::make('agent_npn')
@@ -81,8 +83,7 @@ class UserResource extends Resource
                     ->imageEditor()
                     ->imageEditorViewportWidth('1920')
                     ->imageEditorViewportHeight('1080'),
-
-                    
+                   
             ]);
     }
 

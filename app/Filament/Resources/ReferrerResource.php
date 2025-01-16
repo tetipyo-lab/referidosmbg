@@ -13,15 +13,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
 use App\Models\Link;
+use App\Models\ReferredLink;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 
+
 class ReferrerResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = ReferredLink::class;
     protected static ?string $navigationLabel = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationItemGroup = 'Referrers';  // Cambia el nombre aquí
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-c-user-group';
     
 
     public static function form(Form $form): Form
@@ -40,10 +42,12 @@ class ReferrerResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
+                    ->unique(table: 'users', column: 'email')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('referral_code')
                     ->label('Referral Code')
                     ->default(User::generateReferralCode())
+                    ->unique(table: 'users', column: 'referral_code')
                     ->readOnlyOn('edit'),
                 Forms\Components\Select::make('link_id')
                     ->label('Link')
