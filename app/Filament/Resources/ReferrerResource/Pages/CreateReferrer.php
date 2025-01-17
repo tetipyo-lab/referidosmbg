@@ -12,6 +12,7 @@ use App\Models\Link;
 use App\Services\LinkeToService;
 use App\Services\TextLinkSmsService;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class CreateReferrer extends CreateRecord
 {
@@ -32,6 +33,7 @@ class CreateReferrer extends CreateRecord
                 'referral_code' => $data['referral_code'],
                 'phone' => $data['phone'],
                 'password' => bcrypt("password1310"), // O cualquier lógica de generación de contraseña
+                'refered_by' => Auth::id(), // ID del usuario autenticado
             ]);
 
             // Insertar un rol relacionado con el usuario en la tabla role_user
