@@ -76,7 +76,7 @@ class CreateReferredLink extends CreateRecord
                 try {
                     //$smsText = $user->name. "\n Se ha creado un enlace que puedes copiar y enviar a tus contactos:\n" . $data['short_links'];
                     $smsText = $user->name. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
-                    "\n y ayudalos a acceder a beneficios exclusivos. Si tienen dudas, responde 1\n Envía STOP para no recibir más mensajes.";
+                    "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
                     //$this->sendToReferrer($referrer_phone, $smsText);
                     Log::info('Mensaje de creacion:', [$smsText]);
                 } catch (\Exception $e) {
