@@ -26,7 +26,7 @@ class CreateReferredLink extends CreateRecord
         try {
             // Log de datos iniciales
             Log::info('Datos iniciales:', $data);
-            
+            $userName = Auth::user()->name;
             // Obtener el referral_code a partir del user_id
             if (isset($data['user_id'])) {
                 $user = User::find($data['user_id']);
@@ -74,8 +74,11 @@ class CreateReferredLink extends CreateRecord
 
                 // Enviar SMS con el nuevo enlace
                 try {
-                    $smsText = "Se ha creado un enlace que puedes copiar y enviar a tus contactos:\n" . $data['short_links'];
-                    $this->sendToReferrer($referrer_phone, $smsText);
+                    //$smsText = $user->name. "\n Se ha creado un enlace que puedes copiar y enviar a tus contactos:\n" . $data['short_links'];
+                    $smsText = $user->name. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
+                    "\n y ayudalos a acceder a beneficios exclusivos. Si tienen dudas, responde 1\n Envía STOP para no recibir más mensajes.";
+                    //$this->sendToReferrer($referrer_phone, $smsText);
+                    Log::info('Mensaje de creacion:', [$smsText]);
                 } catch (\Exception $e) {
                     // Log error but don't stop the process
                     Log::error('Error al enviar SMS: ' . $e->getMessage(), [
