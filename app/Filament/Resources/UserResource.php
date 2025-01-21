@@ -26,6 +26,17 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?int $navigationSort = 40;
+    // Si quieres personalizar la navegación
+    public static function getNavigationLabel(): string
+    {
+        return 'Usuarios';
+    }
+
+    // Para cambiar el grupo de navegación
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Administración'; // o null si no quieres que esté en un grupo
+    }
 
     public static function form(Form $form): Form
     {

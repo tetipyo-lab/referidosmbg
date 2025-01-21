@@ -9,6 +9,7 @@ use App\Services\TextLinkSmsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
 use App\Models\User;
 use App\Models\Link;
 
@@ -77,7 +78,7 @@ class CreateReferredLink extends CreateRecord
                     //$smsText = $user->name. "\n Se ha creado un enlace que puedes copiar y enviar a tus contactos:\n" . $data['short_links'];
                     $smsText = $user->name. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
                     "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
-                    //$this->sendToReferrer($referrer_phone, $smsText);
+                    $this->sendToReferrer($referrer_phone, $smsText);
                     Log::info('Mensaje de creacion:', [$smsText]);
                 } catch (\Exception $e) {
                     // Log error but don't stop the process
@@ -113,11 +114,23 @@ class CreateReferredLink extends CreateRecord
                 'phone' => $to,
                 'response' => $response
             ]);
+            Notification::make()
+                ->title('SMS enviado!')
+                ->success()
+                ->body("El mensaje de texto ha sido enviado correctamente al numero $to") // Usar los datos del modelo
+                ->persistent()
+                ->send();
         } catch (\Exception $e) {
             Log::error('Error en el envío de SMS', [
                 'phone' => $to,
                 'error' => $e->getMessage()
             ]);
+            Notification::make()
+                ->title('Error al enviar SMS!')
+                ->danger()
+                ->body("El mensaje de texto NO ha sido enviado a $to") // Usar los datos del modelo
+                ->persistent()
+                ->send();
             throw $e;
         }
     }

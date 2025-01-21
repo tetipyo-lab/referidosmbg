@@ -25,10 +25,19 @@ use Webbingbrasil\FilamentCopyActions\Tables\Actions\CopyAction;
 class ReferredLinkResource extends Resource
 {
     protected static ?string $model = ReferredLink::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-cursor-arrow-rays';
-    
     protected static ?int $navigationSort = 10;
+    // Si quieres personalizar la navegación
+    public static function getNavigationLabel(): string
+    {
+        return 'Enlaces Referidos';
+    }
+
+    // Para cambiar el grupo de navegación
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Referidos'; // o null si no quieres que esté en un grupo
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -43,12 +52,14 @@ class ReferredLinkResource extends Resource
                     ->label('Referrer')
                     ->options(function () {
                         // Verifica si el usuario autenticado es un Admin
-                        if (Auth::user()?->roles()->where('name', 'Admin')->exists()) {
+                        if (Auth::user()?->roles()->where('name','Admin')->exists()) {
                             return User::all()->pluck('name', 'id');
+                        }elseif(Auth::user()?->roles()->where('name','Agent')->exists()){
+                            return User::where('referred_by', Auth::id())->pluck('name', 'id');
                         }
                         return [];
                     })
-                    ->hidden(fn () => !Auth::user()?->roles()->where('name', 'Admin')->exists()) // Hace el campo invisible si no es Admin
+                    ->hidden(fn () => !Auth::user()?->roles()->whereIn('name',['Admin','Agent'])->exists()) // Hace el campo invisible si no es Admin
                     ->required(),
                 Forms\Components\Select::make('link_id')
                     ->label('Link') // Etiqueta para el campo

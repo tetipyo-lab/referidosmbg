@@ -23,9 +23,30 @@ use Illuminate\Database\Eloquent\Model;
 class ReferrerResource extends Resource
 {
     protected static ?string $model = ReferredLink::class;
-    protected static ?string $navigationLabel = 'Create Referrer';  // Cambia el nombre aquí
+    protected static ?string $navigationLabel = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationItemGroup = 'Referrers';  // Cambia el nombre aquí
     protected static ?string $navigationIcon = 'heroicon-c-user-group';
+    public static function getModelLabel(): string
+    {
+        return 'Referido';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Referidos';
+    }
+
+    // Si quieres personalizar la navegación
+    public static function getNavigationLabel(): string
+    {
+        return 'Mis Referidos';
+    }
+
+    // Para cambiar el grupo de navegación
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Referidos'; // o null si no quieres que esté en un grupo
+    }
     public static function shouldRegisterNavigation(): bool
     {
         return Auth::user()?->roles()->whereIn('name', ['Admin','Agent'])->exists();
@@ -71,20 +92,33 @@ class ReferrerResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('Teléfono'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha de registro')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                //Tables\Actions\ViewAction::make(),
+                //Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (User $user) {
+                return $user->where("referred_by", Auth::id());
+            });
     }
 
     public static function getRelations(): array
@@ -97,10 +131,10 @@ class ReferrerResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\CreateReferrer::route('/create'),
-            /*'index' => Pages\ListReferrers::route('/'),
+            //'index' => Pages\CreateReferrer::route('/create'),
+            'index' => Pages\ListReferrers::route('/'),
             'create' => Pages\CreateReferrer::route('/create'),
-            'view' => Pages\ViewReferrer::route('/{record}'),
+            /*'view' => Pages\ViewReferrer::route('/{record}'),
             'edit' => Pages\EditReferrer::route('/{record}/edit'),*/
         ];
     }

@@ -20,6 +20,17 @@ class RoleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
     
     protected static ?int $navigationSort = 30;
+    // Si quieres personalizar la navegación
+    public static function getNavigationLabel(): string
+    {
+        return 'Roles';
+    }
+
+    // Para cambiar el grupo de navegación
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Administración'; // o null si no quieres que esté en un grupo
+    }
 
     public static function form(Form $form): Form
     {

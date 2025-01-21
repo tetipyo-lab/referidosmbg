@@ -33,7 +33,7 @@ class CreateReferrer extends CreateRecord
                 'referral_code' => $data['referral_code'],
                 'phone' => $data['phone'],
                 'password' => bcrypt("password1310"), // O cualquier lógica de generación de contraseña
-                'refered_by' => Auth::id(), // ID del usuario autenticado
+                'referred_by' => Auth::id(), // ID del usuario autenticado
             ]);
 
             // Insertar un rol relacionado con el usuario en la tabla role_user
@@ -111,11 +111,23 @@ class CreateReferrer extends CreateRecord
                 'phone' => $to,
                 'response' => $response
             ]);
+            Notification::make()
+                ->title('SMS enviado!')
+                ->success()
+                ->body("El mensaje de texto ha sido enviado correctamente al numero $to")
+                ->persistent()
+                ->send();
         } catch (\Exception $e) {
             Log::error('Error en el envío de SMS', [
                 'phone' => $to,
                 'error' => $e->getMessage()
             ]);
+            Notification::make()
+                ->title('Error al enviar SMS')
+                ->danger()
+                ->body("El mensaje de texto NO ha sido enviado a $to") // Usar los datos del modelo
+                ->persistent()
+                ->send();  // Usando send() en lugar de notify()
             throw $e;
         }
     }
