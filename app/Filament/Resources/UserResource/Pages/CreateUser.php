@@ -16,7 +16,7 @@ class CreateUser extends CreateRecord
     {
         try {
             $data['phone'] = preg_replace('/^1?(\d{10})$/', '+1$1', $data['phone']);
-            Log::info('Registro creado exitosamente:', ['id' => $record->id]);
+            Log::info('Registro creado exitosamente:', ['name' => $data["name"]]);
             return $data;
         } catch (\Exception $e) {
             Log::error('Error al crear el registro: ' . $e->getMessage());
@@ -28,7 +28,7 @@ class CreateUser extends CreateRecord
     {
         try {
             $record = static::getModel()::create($data);
-            Log::info('Registro creado exitosamente:', ['id' => $record->id]);
+            Log::info('Registro creado exitosamente');
             return $record;
         } catch (\Exception $e) {
             Log::error('Error al crear el registro: ' . $e->getMessage());
