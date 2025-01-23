@@ -75,7 +75,11 @@ class CreateReferrer extends CreateRecord
 
                 // Enviar SMS con el nuevo enlace
                 try {
-                    $smsText = "Se ha creado un enlace que puedes copiar y enviar a tus contactos:\n" . $data['short_links'];
+                    $userName = Auth::user()->name;
+                    $referrerName = explode(" ",$data['name']);
+                    $smsText = $referrerName[0]. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
+                    "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
+                    
                     $this->sendToReferrer($data["phone"], $smsText);
                 } catch (\Exception $e) {
                     // Log error but don't stop the process
