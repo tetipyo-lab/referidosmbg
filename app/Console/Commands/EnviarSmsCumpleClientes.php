@@ -17,17 +17,13 @@ class EnviarSmsCumpleClientes extends Command
     protected $description = 'Enviar sms de felicitaciones automáticamente todos los días';
     protected $textLinkSmsService;
 
-   /* public function __construct(TextLinkSmsService $textLinkSmsService)
-    {
-        $this->textLinkSmsService = $textLinkSmsService;
-    }*/
     /**
      * Execute the console command.
      */
     public function handle(TextLinkSmsService $textLinkSmsService)
     {
         $this->textLinkSmsService = $textLinkSmsService;
-        \Log::info('Correo diario enviado.');
+        \Log::info('Verificando cumpleaños: '.date('m-d'));
         $leads = VtigerLead::whereHas('customFields', function ($query) {
             $query->where('cf_853', 'like', '%-'.date('m-d'))
             ->where('cf_935','=','739694')
@@ -37,30 +33,28 @@ class EnviarSmsCumpleClientes extends Command
         ->get();
         
         if($leads->isEmpty()){
-            echo "No hay leads que cumplan años hoy.";
-            \Log::info('Correo diario enviado.');
+            echo "No hay Clientes que cumplan años hoy.";
+            \Log::info('No hay Clientes que cumplan años hoy.');
         }else{
             
             foreach ($leads as $lead) {
                 $prNombre = explode(" ",$lead->firstname)[0] ?? 'Hola';
                 $phoneDst = $lead->address->mobile;
-                //$phoneDst = "14697339666";
-                echo "Lead ID: " . $lead->leadid . "\n";
-                echo "Lead STATUS: " . $lead->leadstatus . "\n";
-                echo "Nombre: " . $lead->firstname . " " . $lead->lastname . "\n";
-                echo "Campo Birthday: " . $lead->customFields->cf_853 . "\n";
-                echo "Telefono: " . $phoneDst . "\n";
-                echo "Email: " . $lead->email . "\n";
-                echo "======>>>>>\n";
+
                 if(strlen($phoneDst) > 10){
-                    $textoSms = $prNombre."\nEn éste día especial quiero felicitarte por un año más de vida. Tu agente de aseguranzas Mario Barrera.";
+                    $textoSms = $prNombre." hola, soy Mario Barrera tu agente de aseguranza. Quiero desearte todo lo mejor en tu dia, clic aqui para escuchar mis felicitaciones: https://linke.to/hbirthday\n
+                    1 para mas informacion.\n
+                    STOP to cancel SMS.";
+                    
                     $response = $this->textLinkSmsService->sendSms("+".$phoneDst, $textoSms);
                     \Log::info('Texto Felicitacion: '.$textoSms);
                     if (isset($response['ok']) && $response['ok']) {
-                        \Log::info('SMS envaido correctamente.');
+                        \Log::info('SMS envaido correctamente a '.$lead->firstname . " " . $lead->lastname." $phoneDst.");
                     }else{
                         \Log::info('Falló envío de SMS.');
                     }
+                }else{
+                    \Log::info("Numero con formato invalido: $phoneDst");
                 }
             }
         }
