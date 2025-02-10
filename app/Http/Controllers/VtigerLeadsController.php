@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use App\Models\VtigerLead;
 
 use App\Services\TextLinkSmsService;
+use App\Services\TelnyxService;
 
 class VtigerLeadsController extends Controller
 {
-    protected $textLinkSmsService;
+    protected $textLinkSmsService,$telnyxService;
 
-    public function __construct(TextLinkSmsService $textLinkSmsService)
+    public function __construct(TextLinkSmsService $textLinkSmsService,TelnyxService $telnyxService)
     {
         $this->textLinkSmsService = $textLinkSmsService;
+        $this->telnyxService = $telnyxService;
     }
 
     public function index(){
@@ -49,4 +51,15 @@ class VtigerLeadsController extends Controller
         return response()->json(['error' => $response['error'] ?? 'Error desconocido'], 500);
     }
 
+    public function lookup(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string'
+        ]);
+
+        $phoneNumber = $request->input('phone');
+        $result = $this->telnyxService->lookupNumber($phoneNumber);
+
+        return response()->json($result);
+    }
 }

@@ -36,3 +36,5 @@ Route::get('/send-sms', function () {
 
 // Ruta para procesar el envío de SMS
 Route::post('/send-sms', [VtigerLeadsController::class, 'sendSms'])->name('send.sms');
+//Route::get('lookup/{phone}', [VtigerLeadsController::class, 'lookup'])->name('lookup.number');
+Route::get('/lookup', [VtigerLeadsController::class, 'lookup'])->name('lookup.number');
