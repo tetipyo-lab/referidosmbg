@@ -59,7 +59,6 @@ class VtigerLeadsController extends Controller
 
         $phoneNumber = $request->input('phone');
         $result = $this->telnyxService->lookupNumber($phoneNumber);
-
         return response()->json($result);
     }
 }
