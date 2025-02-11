@@ -34,15 +34,17 @@ class LookupVtigerNumbers extends Command
         $cantFijos = 0;
         $cantRecorridos = 0;
 
-        \Log::info('Validando numeros en Telnyx: '.date('m-d'));
+        \Log::info('Validando numeros en Telnyx: '.date('m-d-Y H:i:s'));
         $leads = VtigerLead::whereHas('customFields', function ($query) {
             $query->where('cf_855','=','TV')
-            ->where('cf_997','=','0');
+            ->where('cf_997','=','0')
+            ->where('leadstatus','=','CONTESTA OTRA PERSONA');
         })
         ->with(['address', 'customFields'])
-        ->limit(50)
+        ->limit(1000)
         ->get();
         $cantRecorridos = $leads->count();
+
         if($cantRecorridos > 0){
             foreach($leads as $lead){
                 $celular = $lead->address->mobile;
@@ -109,7 +111,7 @@ class LookupVtigerNumbers extends Command
             \Log::info('No hay leads para ésta condicion');
         }
         
-        \Log::info('Fin del proceso de validacion: '.date('m-d'));
+        \Log::info('Fin del proceso de validacion: '.date('m-d-Y H:i:s'));
         \Log::info('Registros verificados:'.$cantRecorridos);
         \Log::info('Telefonos fijos: '.$cantFijos);
         \Log::info('Telefonos desconectados: '.$cantDesconectados);
@@ -128,7 +130,11 @@ class LookupVtigerNumbers extends Command
                 'asunto' => 'Verificación de números Leads - Lookup Numbers Telnyx',
                 'mensaje' => $body
             ];
-            Notification::route('mail', 'insfranjosealfredo@gmail.com')->notify(new MailNotificarAdmins($detalle));
+            Notification::route('mail', [
+                'insfranjosealfredo@gmail.com',
+                'mbgroup.insurance@gmail.com',
+                'mariobarreraruiz@gmail.com',
+            ])->notify(new MailNotificarAdmins($detalle));
         } catch (\Exception $e) {
             \Log::error('Error al enviar el correo: ' . $e->getMessage());
         }
