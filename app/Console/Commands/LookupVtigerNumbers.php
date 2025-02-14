@@ -25,13 +25,13 @@ class LookupVtigerNumbers extends Command
      * @var string
      */
     protected $description = 'Cambiar el estado de los números desconectados en Vtiger';
-
+    protected $cantDesconectados = 0;
     /**
      * Execute the console command.
      */
     public function handle(TelnyxService $telnyx)
     {
-        $cantDesconectados = 0;
+        //$cantDesconectados = 0;
         $cantFijos = 0;
         $cantRecorridos = 0;
 
@@ -64,6 +64,7 @@ class LookupVtigerNumbers extends Command
                 $isFijo = $lead->customFields->cf_995;
                 $ciudad = $lead->address->city;
                 $direccion = $lead->address->lane;
+                $isFijo = false;
                 
                 echo "Lead ID: " . $lead->leadid . "\n";
                 echo "Telefono: " . $celular . "\n";
@@ -79,7 +80,6 @@ class LookupVtigerNumbers extends Command
                     $tipo = "";
                     $valido = false;
                     $callerName = "";
-                    $isFijo = false;
                     $estado ="";
                     if(isset($result->valid_number)){
                         $valido = $result->valid_number;
@@ -102,23 +102,15 @@ class LookupVtigerNumbers extends Command
                         echo "$line\n";
                         \Log::info('Registro '.$line);
                         //Actualizar registro => cf_997, cf_995, leadstatus
-                        $data = ["cf_997" => "1", "cf_995" => $isFijo];
-                        $updCf = VtigerLeadsCf::where('leadid', $lead->leadid)
-                        ->update($data);
-                        if($updCf){
-                            if($estado =="TELEFONO DESCONECTADO"){
-                                $cantDesconectados++;
-                                $updLead = VtigerLead::where('leadid',$lead->leadid)
-                                ->update(["leadstatus" => $estado]);
-                                if($updLead){
-                                    echo "Telefono Desconectado detectado\n";
-                                }
-                            }
-                            echo "Información del Lead Actualizada\n";
-                        }
+                        $this->updateDisconnect($isFijo,$estado,$lead->leadid);
                     }else{
                         \Log::info('Error al consultar API');
                     }
+                }else{
+                    //Si los números són inválidos, actualizar y poner como desconectados
+                    //Actualizar registro => cf_997, cf_995, leadstatus
+                    echo "Teléfono invalido->continuar\n";
+                    $this->updateDisconnect($isFijo,"TELEFONO DESCONECTADO",$lead->leadid);
                 }
                 echo ">>>>>>>>>>>>\n";
                 sleep(rand(1,5));
@@ -131,8 +123,8 @@ class LookupVtigerNumbers extends Command
         \Log::info('Fin del proceso de validacion: '.date('m-d-Y H:i:s'));
         \Log::info('Registros verificados:'.$cantRecorridos);
         \Log::info('Telefonos fijos: '.$cantFijos);
-        \Log::info('Telefonos desconectados: '.$cantDesconectados);
-        $this->correoNotificacion($cantRecorridos,$cantFijos,$cantDesconectados);
+        \Log::info('Telefonos desconectados: '.$this->cantDesconectados);
+        $this->correoNotificacion($cantRecorridos,$cantFijos,$this->cantDesconectados);
     }
 
     private function correoNotificacion($cantRecorridos,$cantFijos,$cantDesconectados){
@@ -156,5 +148,23 @@ class LookupVtigerNumbers extends Command
             \Log::error('Error al enviar el correo: ' . $e->getMessage());
         }
         
+    }
+
+    private function updateDisconnect($isFijo,$estado,$idLead){
+        //$lead->leadid
+        $data = ["cf_997" => "1", "cf_995" => $isFijo];
+        $updCf = VtigerLeadsCf::where('leadid', $idLead)
+        ->update($data);
+        if($updCf){
+            if($estado =="TELEFONO DESCONECTADO"){
+                $this->cantDesconectados++;
+                $updLead = VtigerLead::where('leadid',$idLead)
+                ->update(["leadstatus" => $estado]);
+                if($updLead){
+                    echo "Telefono Desconectado detectado\n";
+                }
+            }
+            echo "Información del Lead Actualizada\n";
+        }
     }
 }
