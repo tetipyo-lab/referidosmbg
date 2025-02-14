@@ -25,6 +25,7 @@ class VtigerLeadaddress extends Model
     // Relación inversa con el lead
     public function lead()
     {
-        return $this->belongsTo(VtigerLead::class, 'leadaddressid', 'leadid');
+        return $this->belongsTo(VtigerLead::class,'leadaddressid','leadid');
     }
+    
 }

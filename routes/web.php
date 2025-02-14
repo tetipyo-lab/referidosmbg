@@ -25,7 +25,8 @@ Route::get('/', function () {
 Route::get('link/{slug}', [LinkController::class, 'validateSlug'])->name('link.validate');
 
 Route::get('page', [PageController::class, 'index'])->name('page');
-Route::get('vtiger', [VtigerLeadsController::class, 'index'])->name('vtiger');
+//Route::get('vtiger', [VtigerLeadsController::class, 'index'])->name('vtiger');
+//Route::get('vtiger/leadsbycity', [VtigerLeadsController::class, 'getLeadsByCity'])->name('vtiger.leadsbycity');
 
 
 

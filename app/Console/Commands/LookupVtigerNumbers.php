@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\VtigerLead;
 use App\Models\VtigerLeadsCf;
+use App\Models\VtigerLeadaddress;
 use App\Services\TelnyxService;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\MailNotificarAdmins;
@@ -36,24 +37,40 @@ class LookupVtigerNumbers extends Command
 
         \Log::info('Validando numeros en Telnyx: '.date('m-d-Y H:i:s'));
         $leads = VtigerLead::whereHas('customFields', function ($query) {
-            $query->where('cf_855','=','TV')
-            ->where('cf_997','=','0')
+            $query->where('cf_997','=','0')
             ->where('leadstatus','=','CONTESTA OTRA PERSONA');
         })
+        ->whereHas('address',function($query){
+            $query->whereIn('city',[
+                    'Dallas','Corinth','Grand Prairie','Duncanville','Cedar Hill','Irving','Desoto','Mesquite',
+                    'Balch Springs','Glenn Heights','Arlington','Red Oak','Lancaster','Fort Worth','Osprey',
+                    'Cedar Creek','Euless','Carrollton','Roanoke','Richardson','Rowlett','Garland','Waxahachie',
+                    'Plano','Kaufman','Venus','Lake','Frisco','Ennis','Forney','Hurst','Lewisville','Wylie',
+                    'North Richland Hills','Alvarado','Melissa','Mansfield','Rice','Terrell','Allen','McKinney',
+                    'Burleson','Crowley','The Colony','Rockwall','Haltom City','Denton','Princeton','Anna','Corsicana',
+                    'Azle','Justin','Rhome','Joshua','Royse City','Little Elm','Haslet','Sanger','Saginaw','Prosper',
+                    'Itasca'
+            ])
+            ->orderBy('city', 'asc'); // Ordena también en la base de datos por seguridad
+        })
         ->with(['address', 'customFields'])
-        ->limit(1000)
+        ->limit(2000)
         ->get();
-        $cantRecorridos = $leads->count();
 
+        $cantRecorridos = $leads->count();
         if($cantRecorridos > 0){
             foreach($leads as $lead){
                 $celular = $lead->address->mobile;
                 $isFijo = $lead->customFields->cf_995;
+                $ciudad = $lead->address->city;
+                $direccion = $lead->address->lane;
                 
                 echo "Lead ID: " . $lead->leadid . "\n";
                 echo "Telefono: " . $celular . "\n";
                 echo "Nombre: " . $lead->firstname . " " . $lead->lastname . "\n";
                 echo "Estado actual: " . $lead->leadstatus . "\n";
+                echo "Ciudad: " . $ciudad . "\n";
+                echo "Direccion: " . $direccion . "\n";
 
                 if(!empty($celular) && strlen($celular) == 11){
                     echo "Numero Celular Válido \n";
