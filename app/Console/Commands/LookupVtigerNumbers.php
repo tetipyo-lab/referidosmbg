@@ -40,6 +40,9 @@ class LookupVtigerNumbers extends Command
             $query->where('cf_997','=','0')
             ->where('leadstatus','=','CONTESTA OTRA PERSONA');
         })
+        ->wherehas('crmEntity',function($query){
+            $query->where('deleted','=','0');
+        })
         ->whereHas('address',function($query){
             $query->whereIn('city',[
                     'Dallas','Corinth','Grand Prairie','Duncanville','Cedar Hill','Irving','Desoto','Mesquite',
@@ -53,7 +56,7 @@ class LookupVtigerNumbers extends Command
             ])
             ->orderBy('city', 'asc'); // Ordena también en la base de datos por seguridad
         })
-        ->with(['address', 'customFields'])
+        ->with(['address', 'customFields','crmEntity'])
         ->limit(2000)
         ->get();
 
