@@ -57,7 +57,7 @@ class LookupVtigerNumbers extends Command
             ->orderBy('city', 'asc'); // Ordena también en la base de datos por seguridad
         })
         ->with(['address', 'customFields','crmEntity'])
-        ->limit(2000)
+        ->limit(5000)
         ->get();
 
         $cantRecorridos = $leads->count();
