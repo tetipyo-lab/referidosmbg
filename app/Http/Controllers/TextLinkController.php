@@ -30,11 +30,12 @@ class TextLinkController extends Controller
             }
 
             $fechaRecibido = isset($data['timestamp']) ? date("Y-m-d H:i:s",strtotime($data['timestamp'])) : now();
-            
+            $phone = str_replace('+', '', $data['phone_number']);
+
             // Guardar el mensaje en la base de datos
             SmsInbox::create([
                 'provider_id' => 2,
-                'sender' => $data['phone_number'],
+                'sender' => $phone,
                 'recipient' => "00000000",
                 'message' => $data['text'],
                 'received_at' => $fechaRecibido,
