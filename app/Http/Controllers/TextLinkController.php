@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\SmsInbox;
 use Illuminate\Validation\ValidationException;
-
+//use \Carbon\Carbon;
 class TextLinkController extends Controller
 {
     /**
@@ -22,7 +22,6 @@ class TextLinkController extends Controller
                 'secret' => 'required|string',
                 'phone_number' => 'required|string',  // Número del remitente
                 'text' => 'required|string', // Contenido del mensaje
-                'timestamp' => 'nullable|date_format:Y-m-d H:i:s', // Fecha opcional
             ]);
 
             if($data["secret"] != "mbgsecret:455"){
@@ -30,13 +29,15 @@ class TextLinkController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'El SECRET no coincide'], 422);
             }
 
+            $fechaRecibido = isset($data['timestamp']) ? date("Y-m-d H:i:s",strtotime($data['timestamp'])) : now();
+            
             // Guardar el mensaje en la base de datos
             SmsInbox::create([
                 'provider_id' => 2,
                 'sender' => $data['phone_number'],
                 'recipient' => "00000000",
                 'message' => $data['text'],
-                'received_at' => $data['timestamp'] ?? now(),
+                'received_at' => $fechaRecibido,
             ]);
 
             // Registrar en logs
