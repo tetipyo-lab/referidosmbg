@@ -22,9 +22,19 @@ class SmsInboxResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     // Si quieres personalizar la navegación
+    public static function getModelLabel(): string
+    {
+        return 'SMS Recibido';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'SMS Recibidos';
+    }
+
     public static function getNavigationLabel(): string
     {
-        return 'Inbox SMS';
+        return 'SMS Recibidos';
     }
 
     // Para cambiar el grupo de navegación
@@ -35,6 +45,11 @@ class SmsInboxResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return Auth::user()?->roles()->whereIn('name', ['Admin','ATC Agent'])->exists();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
     public static function form(Form $form): Form
@@ -71,12 +86,15 @@ class SmsInboxResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('recipient')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('message')
+                    ->searchable(),
                 Tables\Columns\IconColumn::make('seen')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('received_at')
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('received_at','desc')
             ->filters([
                 Filter::make('received_at')
                     ->form([
@@ -90,7 +108,7 @@ class SmsInboxResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                //Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -110,8 +128,8 @@ class SmsInboxResource extends Resource
     {
         return [
             'index' => Pages\ListSmsInboxes::route('/'),
-            'create' => Pages\CreateSmsInbox::route('/create'),
-            'edit' => Pages\EditSmsInbox::route('/{record}/edit'),
+            //'create' => Pages\CreateSmsInbox::route('/create'),
+            //'edit' => Pages\EditSmsInbox::route('/{record}/edit'),
         ];
     }
 }

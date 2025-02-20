@@ -21,16 +21,20 @@ class TextLinkController extends Controller
             $data = $request->validate([
                 'secret' => 'required|string',
                 'phone_number' => 'required|string',  // Número del remitente
-                'received' => 'required|string', // Número receptor (tu línea)
                 'text' => 'required|string', // Contenido del mensaje
-                'timestamp' => 'nullable|date', // Fecha opcional
+                'timestamp' => 'nullable|date_format:Y-m-d H:i:s', // Fecha opcional
             ]);
+
+            if($data["secret"] != "mbgsecret:455"){
+                Log::error('Error de validación en el webhook de TextLink SMS: El SECRET no coincide');
+                return response()->json(['status' => 'error', 'message' => 'El SECRET no coincide'], 422);
+            }
 
             // Guardar el mensaje en la base de datos
             SmsInbox::create([
                 'provider_id' => 2,
                 'sender' => $data['phone_number'],
-                'recipient' => $data['received'],
+                'recipient' => "00000000",
                 'message' => $data['text'],
                 'received_at' => $data['timestamp'] ?? now(),
             ]);
