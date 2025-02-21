@@ -78,9 +78,10 @@ class VtigerLeadsController extends Controller
         $request->validate([
             'to' => 'required|string',
             'message' => 'required|string|max:160',
+            'selSim' => 'nullable|integer'
         ]);
-
-        $response = $this->textLinkSmsService->sendSms($request->to, $request->message);
+   
+        $response = $this->textLinkSmsService->sendSms($request->to, $request->message,$request->selSim);
         
         if (isset($response['ok']) && $response['ok']) {
             return response()->json(['message' => 'SMS enviado correctamente']);

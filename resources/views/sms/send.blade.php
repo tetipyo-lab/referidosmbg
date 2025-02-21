@@ -16,6 +16,16 @@
                 <input type="text" class="form-control" id="to" name="to" placeholder="+1234567890" required>
             </div>
             <div class="mb-3">
+                <label for="to" class="form-label">Remitente</label>
+                <select name="selSim" id="selSim" class="form-control">
+                    <option value="287">SIM 287</option>
+                    <option value="288">SIM 288</option>
+                    <option value="722">SIM 722</option>
+                    <option value="706">SIM 706</option>
+
+                </select>
+            </div>
+            <div class="mb-3">
                 <label for="message" class="form-label">Mensaje</label>
                 <textarea class="form-control" id="message" name="message" rows="3" placeholder="Escribe tu mensaje aquí..." required></textarea>
             </div>
