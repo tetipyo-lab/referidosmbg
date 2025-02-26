@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     {
         //Enviar felicitacion Clientes - Mario
         $schedule->command('sms:felicitar-clientes-mario')->dailyAt('09:00');
-        $schedule->command('app:lookup-vtiger-numbers')->dailyAt('02:00');
+        //$schedule->command('app:lookup-vtiger-numbers')->dailyAt('02:00');
     }
 
     /**
