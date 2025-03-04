@@ -72,14 +72,13 @@ class CreateReferrer extends CreateRecord
                 $data['short_links'] = $shortLinkResponse['data']["short_link"] ?? "https://error.linke.to";
                 $data['slug'] = $shortLinkResponse['data']["name"] ?? "error";
                 $data['clicks'] = $data['clicks'] ?? 0;
-
+                $userName = Auth::user()->name;
+                $referrerName = explode(" ",$data['name']);
+                $smsText = $referrerName[0]. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
+                "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
+                    
                 // Enviar SMS con el nuevo enlace
                 try {
-                    $userName = Auth::user()->name;
-                    $referrerName = explode(" ",$data['name']);
-                    $smsText = $referrerName[0]. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
-                    "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
-                    
                     $this->sendToReferrer($data["phone"], $smsText);
                 } catch (\Exception $e) {
                     // Log error but don't stop the process
