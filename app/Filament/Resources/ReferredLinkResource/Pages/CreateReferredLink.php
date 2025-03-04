@@ -74,7 +74,7 @@ class CreateReferredLink extends CreateRecord
                 $data['clicks'] = $data['clicks'] ?? 0;
                 
                 $referrerName = explode(" ",$user->name);
-                $smsText = $referrerName. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
+                $smsText = $referrerName[0]. ",\n Soy $userName. Comparte este enlace con tus contactos: " . $data['short_links'].
                 "\n y ayudalos a acceder a beneficios exclusivos. Si tienes dudas, responde 1\n Envía STOP para no recibir más mensajes.";
                 
                 // Enviar SMS con el nuevo enlace
