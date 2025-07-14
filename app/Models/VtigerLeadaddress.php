@@ -19,7 +19,8 @@ class VtigerLeadaddress extends Model
         'state',
         'country',
         'street',
-        'pobox'
+        'pobox',
+        'mobile'
     ];
 
     // Relación inversa con el lead

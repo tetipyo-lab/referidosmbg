@@ -93,6 +93,16 @@ class DncNumber extends Model
         return $query->where('phone_number', $phoneNumber);
     }
 
+    public function scopeLikePhoneNumber($query, $phoneNumber)
+    {
+        return $query->where('phone_number', 'ILIKE', "%$phoneNumber%");
+    }
+
+    public function scopeByCreatedDate($query, $date)
+    {
+        return $query->whereDate('created_at', $date);
+    }
+
     /**
      * Scope para números agregados después de cierta fecha.
      *
