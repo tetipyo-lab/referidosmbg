@@ -9,6 +9,7 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         \App\Console\Commands\EnviarSmsCumpleClientes::class,
+        \App\Console\Commands\ProcessDncFiles::class,
     ];
     /**
      * Define the application's command schedule.
