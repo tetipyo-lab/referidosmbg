@@ -59,6 +59,7 @@ class VtigerMarcarDNC extends Command
 
             foreach ($leads as $lead) {
                 try {
+                    $dncNumber = "";
                     $normalizedPhone = $this->normalizePhone($lead->mobile);
                     // Quitar el 1 del frente si existe
                     $phoneDst = (substr($normalizedPhone, 0, 1) === '1')
@@ -69,8 +70,8 @@ class VtigerMarcarDNC extends Command
                     $estadoActual = $lead->lead->leadstatus;
                     $this->line("Procesando lead: $lead_name (ID: $lead_id, Teléfono: $phoneDst, Estado: $estadoActual)");
                     // Buscar leads que coincidan con el número
-                    $dncNumber = DncNumber::ByPhoneNumber($phoneDst)->first();
-                    
+                    $dncNumber = DncNumber::byPhoneNumber($phoneDst)->first();
+
                     if (!$dncNumber) {
                         $this->line("Número $phoneDst no encontrado en DNC");
                         // Actualizar el lead
