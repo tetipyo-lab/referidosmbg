@@ -22,81 +22,73 @@ class VtigerMarcarDNC extends Command
     public function handle()
     {
         $this->info('Iniciando el proceso de marcar números DNC en Vtiger...');
-
+        $currentMonth = Carbon::now()->format('m');
         try {
             $stats = [
-                'total_leads_encontrados' => 0,
+                'total_leads_procesados' => 0,
                 'leads_actualizados' => 0,
                 'leads_no_actualizados' => 0,
-                'numeros_procesados' => 0,
-                'numeros_sin_leads' => 0
+                'dnc_encontrados' => 0,
             ];
+            //Obtener los leads de VTIGER que no estan eliminados, no son DNC y tiene el campo
+            // lead.tags = dnc_MM (MM es el mes actual)
+            $this->info("Mes actual: $currentMonth");
+            // Buscar leads que coincidan con el número
+            $leads = VtigerLeadAddress::with(['lead.crmEntity'])
+                ->whereHas('lead', function ($q) use($currentMonth) {
+                    $q->where('leadstatus', '!=', 'DNC');
+                    $q->where('leadstatus', '!=', 'APROBADO');
+                    $q->where('leadstatus', '!=', 'CITA AGENDADA');
+                    $q->where('evaluationstatus','!=','DNC_'.$currentMonth);
+                    $q->orWhereNull('evaluationstatus');
+                })
+                ->whereHas('lead.crmEntity', function ($q) {
+                    $q->where('deleted', 0);
+                })
+                ->limit($this->option('limit'))
+                ->get();
 
-            // Obtener números DNC nuevos
-            $newDncNumbers = DncNumber::whereDate('created_at', Carbon::today())
-                                    ->limit($this->option('limit'))
-                                    ->get();
-
-            if ($newDncNumbers->isEmpty()) {
-                $this->info('No hay números DNC nuevos para procesar.');
+            if ($leads->isEmpty()) {
+                $this->info('No hay leads para procesar.');
                 return 0;
             }
 
-            $this->info("Procesando {$newDncNumbers->count()} números DNC...");
-            $progressBar = $this->output->createProgressBar($newDncNumbers->count());
+            $this->info("Procesando {$leads->count()} leads...");
+            $progressBar = $this->output->createProgressBar($leads->count());
+            $stats['total_leads_procesados'] = $leads->count();
 
-            foreach ($newDncNumbers as $dncNumber) {
+            foreach ($leads as $lead) {
                 try {
-                    $normalizedPhone = $this->normalizePhone($dncNumber->phone_number);
-                    $phoneDst = "+1".$normalizedPhone;
-
+                    $normalizedPhone = $this->normalizePhone($lead->mobile);
+                    // Quitar el 1 del frente si existe
+                    $phoneDst = (substr($normalizedPhone, 0, 1) === '1')
+                        ? substr($normalizedPhone, 1)
+                        : $normalizedPhone;
+                    $lead_name = $lead->lead->firstname . ' ' . $lead->lead->lastname;
+                    $lead_id = $lead->lead->leadid;
+                    $estadoActual = $lead->lead->leadstatus;
+                    $this->line("Procesando lead: $lead_name (ID: $lead_id, Teléfono: $phoneDst, Estado: $estadoActual)");
                     // Buscar leads que coincidan con el número
-                    $leads = VtigerLeadAddress::with(['lead.crmEntity'])
-                        ->where(function($query) use ($phoneDst) {
-                            $query->where('mobile', '12542215200');
-                        })
-                        ->whereHas('lead', function ($q) {
-                            $q->where('leadstatus', '!=', 'DNC');
-                        })
-                        ->whereHas('lead.crmEntity', function ($q) {
-                            $q->where('deleted', 0);
-                        })
-                        ->get();
-
-                    if ($leads->isEmpty()) {
-                        $stats['numeros_sin_leads']++;
-                        $this->line("Número {$dncNumber->phone_number} no encontrado en leads activos");
+                    $dncNumber = DncNumber::byPhoneNumber($phoneDst)->first();
+                    
+                    if (!$dncNumber) {
+                        $this->line("Número $phoneDst no encontrado en DNC");
+                        // Actualizar el lead
+                        $lead->lead->evaluationstatus = 'DNC_' . $currentMonth;
+                        $lead->lead->save();
                         $progressBar->advance();
                         continue;
                     }
+                    
+                    $this->line("Número encontrado en DNC: {$lead->mobile} (ID: {$dncNumber->id})");
+                    $stats['dnc_encontrados']++;
 
-                    $stats['total_leads_encontrados'] += $leads->count();
-                    $stats['numeros_procesados']++;
-
-                    foreach ($leads as $lead) {
-                        $lead_name = $lead->lead->firstname . ' ' . $lead->lead->lastname;
-                        $lead_phone = $lead->mobile;
-                        $lead_id = $lead->lead->leadid;
-                        $estadoActual = $lead->lead->leadstatus;
-
-                        $this->info("\nMarcando DNC: $lead_name, $lead_phone, ID: $lead_id, Estado Actual: $estadoActual");
-
-                        if (!$this->option('test')) {
-                            $vtigerLead = VtigerLead::find($lead_id);
-                            if ($vtigerLead) {
-                                $vtigerLead->leadstatus = 'DNC';
-                                $vtigerLead->save();
-                                $stats['leads_actualizados']++;
-                                $this->info("Lead $lead_id actualizado a DNC");
-                            } else {
-                                $stats['leads_no_actualizados']++;
-                                $this->error("Lead $lead_id no encontrado");
-                            }
-                        } else {
-                            $this->line("[MODO PRUEBA] Lead $lead_id sería marcado como DNC");
-                            $stats['leads_actualizados']++; // Contamos como si se hubiera actualizado en modo prueba
-                        }
-                    }
+                    // Actualizar el lead
+                    $lead->lead->leadstatus = 'DNC';
+                    $lead->lead->evaluationstatus = 'DNC_' . $currentMonth;
+                    $lead->lead->save();
+                    $stats['leads_actualizados']++;
+                    $this->info("Lead {$lead_name} (ID: {$lead_id}) marcado como DNC.");
 
                     $progressBar->advance();
 
@@ -106,6 +98,7 @@ class VtigerMarcarDNC extends Command
                         'dnc_id' => $dncNumber->id,
                         'error' => $e->getTraceAsString()
                     ]);
+                    $stats['leads_no_actualizados']++;
                 }
             }
 
@@ -116,9 +109,8 @@ class VtigerMarcarDNC extends Command
             $this->table(
                 ['Métrica', 'Valor'],
                 [
-                    ['Números DNC procesados', $stats['numeros_procesados']],
-                    ['Números sin leads', $stats['numeros_sin_leads']],
-                    ['Total leads encontrados', $stats['total_leads_encontrados']],
+                    ['Total leads procesados', $stats['total_leads_procesados']],
+                    ['Números DNC encontrados', $stats['dnc_encontrados']],
                     ['Leads actualizados', $stats['leads_actualizados']],
                     ['Leads no actualizados', $stats['leads_no_actualizados']]
                 ]
@@ -128,7 +120,7 @@ class VtigerMarcarDNC extends Command
             if (!$this->option('test')) {
                 Mail::to('insfranjosealfredo@gmail.com')->send(
                     new LeadsEjecucionMarcarDnc(
-                        $stats['total_leads_encontrados'],
+                        $stats['total_leads_procesados'],
                         $stats['leads_actualizados'],
                         $stats['leads_no_actualizados']
                     )
