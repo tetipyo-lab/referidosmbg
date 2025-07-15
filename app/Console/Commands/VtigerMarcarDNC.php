@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\DncNumber;
 use App\Models\VtigerLead;
-use App\Models\VtigerLeadAddress;
+use App\Models\VtigerLeadaddress;
 use App\Models\VtigerCrmentity;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LeadsEjecucionMarcarDnc;
@@ -34,7 +34,7 @@ class VtigerMarcarDNC extends Command
             // lead.tags = dnc_MM (MM es el mes actual)
             $this->info("Mes actual: $currentMonth");
             // Buscar leads que coincidan con el número
-            $leads = VtigerLeadAddress::with(['lead.crmEntity'])
+            $leads = VtigerLeadaddress::with(['lead.crmEntity'])
                 ->whereHas('lead', function ($q) use($currentMonth) {
                     $q->where('leadstatus', '!=', 'DNC');
                     $q->where('leadstatus', '!=', 'APROBADO');
