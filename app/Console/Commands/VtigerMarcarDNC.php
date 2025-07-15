@@ -69,7 +69,7 @@ class VtigerMarcarDNC extends Command
                     $estadoActual = $lead->lead->leadstatus;
                     $this->line("Procesando lead: $lead_name (ID: $lead_id, Teléfono: $phoneDst, Estado: $estadoActual)");
                     // Buscar leads que coincidan con el número
-                    $dncNumber = DncNumber::byPhoneNumber($phoneDst)->first();
+                    $dncNumber = DncNumber::ByPhoneNumber($phoneDst)->first();
                     
                     if (!$dncNumber) {
                         $this->line("Número $phoneDst no encontrado en DNC");
