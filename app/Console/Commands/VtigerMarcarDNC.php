@@ -35,18 +35,20 @@ class VtigerMarcarDNC extends Command
             $this->info("Mes actual: $currentMonth");
             // Buscar leads que coincidan con el número
             $leads = VtigerLeadaddress::with(['lead.crmEntity'])
-                ->whereHas('lead', function ($q) use($currentMonth) {
-                    $q->where('leadstatus', '!=', 'DNC');
-                    $q->where('leadstatus', '!=', 'APROBADO');
-                    $q->where('leadstatus', '!=', 'CITA AGENDADA');
-                    $q->where('evaluationstatus','!=','DNC_'.$currentMonth);
-                    $q->orWhereNull('evaluationstatus');
-                })
-                ->whereHas('lead.crmEntity', function ($q) {
-                    $q->where('deleted', 0);
-                })
-                ->limit($this->option('limit'))
-                ->get();
+            ->whereHas('lead', function ($q) use($currentMonth) {
+                $q->where('leadstatus', '!=', 'DNC');
+                $q->where('leadstatus', '!=', 'APROBADO');
+                $q->where('leadstatus', '!=', 'CITA AGENDADA');
+                $q->where(function ($sub) use ($currentMonth) {
+                    $sub->where('evaluationstatus', '!=', 'DNC_' . $currentMonth)
+                        ->orWhereNull('evaluationstatus');
+                });
+            })
+            ->whereHas('lead.crmEntity', function ($q) {
+                $q->where('deleted', 0);
+            })
+            ->limit($this->option('limit'))
+            ->get();
 
             if ($leads->isEmpty()) {
                 $this->info('No hay leads para procesar.');
@@ -56,7 +58,7 @@ class VtigerMarcarDNC extends Command
             $this->info("Procesando {$leads->count()} leads...");
             $progressBar = $this->output->createProgressBar($leads->count());
             $stats['total_leads_procesados'] = $leads->count();
-
+            
             foreach ($leads as $lead) {
                 try {
                     $dncNumber = "";
@@ -70,6 +72,12 @@ class VtigerMarcarDNC extends Command
                     $estadoActual = $lead->lead->leadstatus;
                     $this->line("Procesando lead: $lead_name (ID: $lead_id, Teléfono: $phoneDst, Estado: $estadoActual)");
                     // Buscar leads que coincidan con el número
+                    if(empty($phoneDst)){
+                        $this->line("Número vacío para el lead: $lead_name (ID: $lead_id)");
+                        $stats['leads_no_actualizados']++;
+                        $progressBar->advance();
+                        continue;
+                    }
                     $dncNumber = DncNumber::byPhoneNumber($phoneDst)->first();
 
                     if (!$dncNumber) {
@@ -94,9 +102,10 @@ class VtigerMarcarDNC extends Command
                     $progressBar->advance();
 
                 } catch (\Exception $e) {
-                    $this->error("Error procesando número {$dncNumber->phone_number}: " . $e->getMessage());
+                    $this->error("Error procesando: " . $e->getMessage());
+                    //$this->error("Error procesando número {$dncNumber->phone_number}: " . $e->getMessage());
                     logger()->error("Error en DNC: " . $e->getMessage(), [
-                        'dnc_id' => $dncNumber->id,
+                        'dnc_id' => "",
                         'error' => $e->getTraceAsString()
                     ]);
                     $stats['leads_no_actualizados']++;
