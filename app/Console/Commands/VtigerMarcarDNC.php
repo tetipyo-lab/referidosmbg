@@ -158,7 +158,9 @@ class VtigerMarcarDNC extends Command
         $clean = preg_replace('/[^0-9]/', '', $phone);
         
         if (strlen($clean) < 7) {
-            throw new \InvalidArgumentException("Número $phone inválido");
+            $this->error("Número $phone inválido");
+            //throw new \InvalidArgumentException("Número $phone inválido");
+            return "";
         }
         
         return $clean;
