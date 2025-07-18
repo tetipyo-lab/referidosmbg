@@ -29,6 +29,7 @@ class VtigerMarcarDNC extends Command
                 'leads_actualizados' => 0,
                 'leads_no_actualizados' => 0,
                 'dnc_encontrados' => 0,
+                'leads_numeros_invalidos' => 0,
             ];
             //Obtener los leads de VTIGER que no estan eliminados, no son DNC y tiene el campo
             // lead.tags = dnc_MM (MM es el mes actual)
@@ -74,7 +75,9 @@ class VtigerMarcarDNC extends Command
                     // Buscar leads que coincidan con el número
                     if(empty($phoneDst)){
                         $this->line("Número vacío para el lead: $lead_name (ID: $lead_id)");
-                        $stats['leads_no_actualizados']++;
+                        $lead->lead->evaluationstatus = 'DNC_' . $currentMonth;
+                        $lead->lead->save();
+                        $stats['leads_numeros_invalidos']++;
                         $progressBar->advance();
                         continue;
                     }
@@ -122,7 +125,8 @@ class VtigerMarcarDNC extends Command
                     ['Total leads procesados', $stats['total_leads_procesados']],
                     ['Números DNC encontrados', $stats['dnc_encontrados']],
                     ['Leads actualizados', $stats['leads_actualizados']],
-                    ['Leads no actualizados', $stats['leads_no_actualizados']]
+                    ['Leads no actualizados', $stats['leads_no_actualizados']],
+                    ['Números inválidos', $stats['leads_numeros_invalidos']]
                 ]
             );
 
@@ -132,7 +136,8 @@ class VtigerMarcarDNC extends Command
                     new LeadsEjecucionMarcarDnc(
                         $stats['total_leads_procesados'],
                         $stats['leads_actualizados'],
-                        $stats['leads_no_actualizados']
+                        $stats['leads_no_actualizados'],
+                        $stats['leads_numeros_invalidos']
                     )
                 );
                 $this->info('Correo con resumen enviado.');

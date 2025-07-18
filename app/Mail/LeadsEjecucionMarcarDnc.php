@@ -14,11 +14,12 @@ class LeadsEjecucionMarcarDnc extends Mailable
     public $leidos;
     public $noActualizados;
 
-    public function __construct($leidos, $actualizados, $noActualizados)
+    public function __construct($leidos, $actualizados, $noActualizados,$nrosInvalidos)
     {
         $this->leidos = $leidos;
         $this->actualizados = $actualizados;
         $this->noActualizados = $noActualizados;
+        $this->nrosInvalidos = $nrosInvalidos;
     }
 
     public function build()
